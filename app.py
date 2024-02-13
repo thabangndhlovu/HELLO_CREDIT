@@ -7,13 +7,9 @@ import streamlit as st
 
 import matplotlib.pyplot as plt
 
-# Set up the page layout
-#st.set_page_config(layout="wide")
 
 
 st.title("Credit Default Assessor Dashboard 💳🔍📉")
-
-
 st.write(
 """
 The KMV model is a credit risk assessment tool that predicts the likelihood of a company defaulting on its debt. 
@@ -24,51 +20,142 @@ making it a valuable tool for investors and financial analysts.
 """
 )
 
-stocks = ["AAPL", "GOOG", "MSFT", "GME", "TSLA"]
-options = st.selectbox("Stock Selection", stocks)
+
+ASSETS = pd.read_excel("resources/stock_universe_sectors.xlsx", index_col=0)
+PRICES = pd.read_csv("resources/stock_prices.csv", index_col=0, parse_dates=True).resample("M").last()
+DEAFAULT_PROB = pd.read_excel("resources/stock_universe_default_prob.xlsx", index_col=0)
+METRICS = pd.read_excel("resources/stock_universe_key_metrics.xlsx", index_col=0)
+
+options = st.selectbox("Stock Selection", ASSETS.security_name)
+
+SECURITY_CLASS = ASSETS.query(f"security_name == '{options}'")
 
 
 
-# Load your data - replace with the path to your dataset
-# data = pd.read_csv('your_dataset.csv')
 
-# Sample data to illustrate - you would use your actual data here
-data = {
-    "Metric": ["Market Cap", "Share Price", "Price Vol (1Yr)", "Total Debt", "Adj CFO (T12M)", "Interest Expn (T12M)"],
-    "Value": [12236.67, 25917.00, 88.2, 920, 2075.1, 53.8],
-    "Units": ["MM", "ZAR", "%", "MM", "MM", "MM"]
-}
+data = METRICS[SECURITY_CLASS.security]
+
+default_prob = DEAFAULT_PROB.loc[SECURITY_CLASS.security].bb_1yr_default_prob[0]
+default_grade = DEAFAULT_PROB.loc[SECURITY_CLASS.security].rsk_bb_issuer_default[0]
 
 
 # Top-level metrics
 col1, col2, col3 = st.columns(3)
-col1.metric("1Yr Default Grade", "IG5")
-col2.metric("2Yr Default Prob", "0.0193%")
-col3.metric("5Yr Model CDS", "269.9 bps")
+col2.metric(f"1Yr Default Prob", default_prob)
+col1.metric(f"1Yr Default Grade", default_grade, "-" if "H" in default_grade else "+")
+with col3:
+    st.markdown(f"### {options}")
+
 
 # Model Inputs Section
-
 col1, col2 = st.columns(2)
 
 with col2:
-    model_inputs = pd.DataFrame(data)
-    st.table(model_inputs)
+    st.write("Financial Metrics")
+    st.table(METRICS[SECURITY_CLASS.security].dropna())
 
 with col1:
-    data = pd.DataFrame(np.random.randn(10, 2), columns=['a', 'b'])
-    st.line_chart(data)
+    st.write("Share Price")
+    st.line_chart(PRICES[SECURITY_CLASS.security].dropna())
 
-# Sector Comparison
-st.header("Sector Comparison | DRAM")
 
-# Replace these with actual data calculations
-sector_data = {
-    "Credit Metric": ["Debt/Equity", "Int Coverage", "ROA", "Liab/EBITDA", "EBIT/Int Exp"],
-    "GFI": [20.8, 27.6, 8.6, 2.6, 358.7],
-    "10 Pctl": [0.4, -12.6, -19.5, -10.5, 117.1],
-    "90 Pctl": [42.3, 16.8, 22.8, 78.5, 0.0]
-}
-sector_comparison = pd.DataFrame(sector_data)
-st.table(sector_comparison)
 
-st.dataframe(sector_comparison)
+# # Sector Comparison
+st.header(f"Sector Comparison | {list(SECURITY_CLASS.industry_sector)[0]}")
+
+
+
+
+import streamlit as st
+import plotly.graph_objects as go
+import numpy as np
+
+# Metrics for comparison
+metrics = ['Profitability', 'Market Value', 'Leverage', 'Size', 'Liquidity']
+
+# Generate random data to simulate sector range, median, weighted average, and BYIT (selected stock)
+#np.random.seed(42)  # For reproducible random results
+sector_range_start = np.random.uniform(low=10, high=50, size=len(metrics))
+sector_range_end = sector_range_start + np.random.uniform(low=50, high=100, size=len(metrics))
+median_values = np.random.uniform(low=sector_range_start, high=sector_range_end, size=len(metrics))
+weighted_avg_values = np.random.uniform(low=sector_range_start, high=sector_range_end, size=len(metrics))
+byit_values = np.random.uniform(low=sector_range_start, high=sector_range_end, size=len(metrics))
+
+# Create the figure
+fig = go.Figure()
+
+# Add the sector range as lines
+for i, metric in enumerate(metrics):
+    fig.add_trace(go.Scatter(
+        x=[sector_range_start[i], sector_range_end[i]],
+        y=[metric, metric],
+        mode='lines',
+        line=dict(color='grey', width=2),
+        showlegend=False
+    ))
+
+# Add median values as cyan dots
+fig.add_trace(go.Scatter(
+    x=median_values,
+    y=metrics,
+    mode='markers',
+    marker=dict(color='cyan', size=10),
+    name='Median'
+))
+
+# Add weighted average values as magenta diamonds
+fig.add_trace(go.Scatter(
+    x=weighted_avg_values,
+    y=metrics,
+    mode='markers',
+    marker=dict(color='magenta', size=10, symbol='diamond'),
+    name='Wtd Avg'
+))
+
+# Add BYIT values as orange dots
+fig.add_trace(go.Scatter(
+    x=byit_values,
+    y=metrics,
+    mode='markers',
+    marker=dict(color='orange', size=10),
+    name=list(SECURITY_CLASS.security)[0]
+))
+
+# Update the layout
+fig.update_layout(
+    xaxis=dict(title='Value'),
+    yaxis=dict(title='', automargin=True),
+    margin=dict(l=20, r=20, t=30, b=20),
+)
+
+# Display the figure in the Streamlit app
+
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+
+np.random.seed()
+
+# Metrics from the previous chart
+metrics = ['Profitability', 'Market Value', 'Leverage', 'Size', 'Liquidity']
+
+# Generate random data for the table
+byit_values = np.random.uniform(low=0, high=100, size=len(metrics)).round(1)
+tenth_percentile_values = np.random.uniform(low=-50, high=byit_values, size=len(metrics)).round(1)
+ninetieth_percentile_values = np.random.uniform(low=byit_values, high=150, size=len(metrics)).round(1)
+
+# Create a DataFrame
+df = pd.DataFrame({
+    'Credit Metric': metrics,
+    list(SECURITY_CLASS.security)[0]: byit_values,
+    '10 Pctl': tenth_percentile_values,
+    '90 Pctl': ninetieth_percentile_values
+})
+
+# Set the 'Credit Metric' as the index for display purposes
+df.set_index('Credit Metric', inplace=True)
+
+# Display the DataFrame as a table in Streamlit
+
+st.table(df)
