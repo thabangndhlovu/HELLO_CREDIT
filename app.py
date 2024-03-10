@@ -23,7 +23,7 @@ making it a valuable tool for investors and financial analysts.
 
 ASSETS = pd.read_excel("resources/stock_universe_sectors.xlsx", index_col=0)
 PRICES = pd.read_csv("resources/stock_prices.csv", index_col=0, parse_dates=True).resample("M").last()
-DEAFAULT_PROB = pd.read_excel("resources/stock_universe_default_prob.xlsx", index_col=0)
+DEFAULT_PROB = pd.read_excel("resources/stock_universe_default_prob.xlsx", index_col=0)
 METRICS = pd.read_excel("resources/stock_universe_key_metrics.xlsx", index_col=0)
 
 options = st.selectbox("Stock Selection", ASSETS.security_name)
@@ -35,8 +35,8 @@ SECURITY_CLASS = ASSETS.query(f"security_name == '{options}'")
 
 data = METRICS[SECURITY_CLASS.security]
 
-default_prob = DEAFAULT_PROB.loc[SECURITY_CLASS.security].bb_1yr_default_prob[0]
-default_grade = DEAFAULT_PROB.loc[SECURITY_CLASS.security].rsk_bb_issuer_default[0]
+default_prob = DEFAULT_PROB.loc[SECURITY_CLASS.security].bb_1yr_default_prob[0]
+default_grade = DEFAULT_PROB.loc[SECURITY_CLASS.security].rsk_bb_issuer_default[0]
 
 
 # Top-level metrics
