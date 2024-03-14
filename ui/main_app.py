@@ -24,7 +24,7 @@ def input_page():
     """)
 
 
-    sector = st.selectbox("Select the sector of the company", ["", "Corporates", "Financial Institutions", "Funds & Asset Management", "Infrastructure & Project Finance", "Insurance", "Other"])
+    sector = st.selectbox("Select the sector of the company", ["Corporates", "Financial Institutions", "Funds & Asset Management", "Infrastructure & Project Finance", "Insurance", "Other"])
 
     ratios = {
         "Profitability 💰": ["Return on Assets", "Operating Margin Ratio", "Net Profit Margin"],
@@ -32,18 +32,18 @@ def input_page():
         "Efficiency ⚡": ["Asset Turnover Ratio"]
     }
 
-    if sector:
-        columns = st.columns(len(ratios))
-        for col, (section, labels) in zip(columns, ratios.items()):
-            with col:
-                st.subheader(section)
-                for label in labels:
-                    # Store the input values in session state
-                    st.session_state.input_values[label] = st.number_input(label, format="%.2f")
-                    
-        st.write("---")
-        if st.button("Predict Default 🚀", on_click=go_to_model_page):
-            pass
+    
+    columns = st.columns(len(ratios))
+    for col, (section, labels) in zip(columns, ratios.items()):
+        with col:
+            st.subheader(section)
+            for label in labels:
+                # Store the input values in session state
+                st.session_state.input_values[label] = st.number_input(label, format="%.2f")
+                
+    st.write("---")
+    if st.button("Predict Default 🚀", on_click=go_to_model_page):
+        pass
 
 # Define the structure for the model output page
 def model_page():
