@@ -27,9 +27,9 @@ def input_page():
     sector = st.selectbox("Select the sector of the company", ["Corporates", "Financial Institutions", "Funds & Asset Management", "Infrastructure & Project Finance", "Insurance", "Other"])
 
     ratios = {
-        "Profitability 💰": ["Return on Assets", "Operating Margin Ratio", "Net Profit Margin"],
-        "Liquidity 💧": ["Total Debt / EBITA", "Interest Coverage Ratio"],
-        "Efficiency ⚡": ["Asset Turnover Ratio"]
+        "Profitability 💰": ["Operating Margin Ratio"],
+        "Liquidity 💧": ["Debt / Equity", "Interest Coverage", "Debt / EBITDA", "EDITDA / Interest Expense"],
+        "Efficiency ⚡": ["Asset Turnover"]
     }
 
     
