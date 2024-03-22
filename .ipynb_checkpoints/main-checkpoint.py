@@ -41,6 +41,7 @@ def input_page():
                 # Store the input values in session state
                 st.session_state.input_values[label] = st.number_input(label, format="%.2f")
                 
+    
     st.write("---")
     if st.button("Predict Default 🚀", on_click=go_to_model_page):
         pass

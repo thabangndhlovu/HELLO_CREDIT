@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Credit Rating Calculator</title>
+</head>
+<body>
+    <h1>Credit Rating Calculator</h1>
+    <form method="post" action="/calculate">
+        <label for="oper_margin">Operating Margin:</label>
+        <input type="number" step="0.01" name="oper_margin" required><br>
+
+        <label for="debt_to_equity">Debt to Equity:</label>
+        <input type="number" step="0.01" name="debt_to_equity" required><br>
+
+        <label for="tot_debt_to_ebitda">Total Debt to EBITDA:</label>
+        <input type="number" step="0.01" name="tot_debt_to_ebitda" required><br>
+
+        <label for="ebitda_to_tot_int_exp">EBITDA to Total Interest Expense:</label>
+        <input type="number" step="0.01" name="ebitda_to_tot_int_exp" required><br>
+
+        <input type="submit" value="Calculate">
+    </form>
+
+    {% if scores %}
+        <h2>Results:</h2>
+        <p>Class Scoring: {{ scores }}</p>
+        <p>Credit Score: {{ weighted_score }}</p>
+        <p>Credit Rating: {{ credit_rating }}</p>
+    {% endif %}
+</body>
+</html>
