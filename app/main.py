@@ -1,91 +1,75 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+import streamlit as st
 
-app = FastAPI()
-templates = Jinja2Templates(directory="templates")
 
-class CreditRatingCalculator:
-    def __init__(self, metrics):
-        self.metrics = metrics
+st.title("Predictive Default Risk Assessor")
 
-    def _calculate_metric_score(self, metric, thresholds, inverse):
-        for score, (lower, upper) in enumerate(thresholds, start=1):
-            if (inverse and metric <= upper) or (not inverse and metric >= lower):
-                return score
-        return len(thresholds) // 2 # else return the middle score
+doc = """Expected to have extremely conservative financial policies; very stable metrics; public commitment to very strong credit profile over the long term."""
+rating = "Aa"
 
-    def _calculate_category_score(self, category_metrics, ratios):
-        total_weighted_score = 0
+st.page_link("pages/credit_description.py", label="Credit Description")
 
-        for metric, weight in zip(
-            category_metrics["metrics"].items(), category_metrics["weights"]
-        ):
-            metric_name, metric_data = metric
-            value = ratios[metric_name]
-            score = self._calculate_metric_score(
-                value, metric_data["thresholds"], metric_data["lower_is_better"]
-            )
-            total_weighted_score += score * weight
+col_1, col_2 = st.columns(2)
+with col_1:
+    st.write(doc)
 
-        return total_weighted_score
+with col_2:
+    with st.container(border=True, height=150):
+        st.metric("", rating, -0)
 
-    def _calculate_scores(self, ratios):
-        scores = {}
-        for category, category_data in self.metrics.items():
-            category_score = self._calculate_category_score(category_data, ratios)
-            scores[category] = category_score
-        return scores
+st.write("---")
 
-    def _calculate_weighted_score(self, scores):
-        weights = {
-            category: category_data["class_weight"]
-            for category, category_data in self.metrics.items()
-        }
-        return sum(scores[category] * weight for category, weight in weights.items())
 
-    def _determine_credit_rating(self, weighted_score):
-        credit_ratings = [
-            (1.5, "Aaa"),
-            (2.5, "Aa"),
-            (3.5, "A"),
-            (4.5, "Baa"),
-            (5.5, "Ba"),
-            (6.5, "B"),
-            (7.5, "Caa"),
-            (8.5, "Ca"),
-            (float("inf"), "C"),
-        ]
+sector = st.selectbox("Select the sector of the company", ["Corporates", "Financial Institutions", "Funds & Asset Management", "Infrastructure & Project Finance", "Insurance", "Other"])
 
-        for threshold, rating in credit_ratings:
-            if weighted_score < threshold:
-                return rating
 
-    def calculate_credit_rating(self, ratios):
-        self.scores = self._calculate_scores(ratios)
-        self.weighted_score = self._calculate_weighted_score(self.scores)
-        self.credit_rating = self._determine_credit_rating(self.weighted_score)
+tab_1, tab_2, tab_3 = st.tabs(["Risk Calc", "Factor Weights", "Rating History"])
 
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
 
-@app.post("/calculate", response_class=HTMLResponse)
-async def calculate(request: Request):
-    form_data = await request.form()
-    ratios = {
-        'oper_margin': float(form_data['oper_margin']),
-        'debt_to_equity': float(form_data['debt_to_equity']),
-        'tot_debt_to_ebitda': float(form_data['tot_debt_to_ebitda']),
-        'ebitda_to_tot_int_exp': float(form_data['ebitda_to_tot_int_exp']),
-    }
+with tab_1:
+    st.subheader("Financial Metrics")
+    st.write(doc)
 
-    model = CreditRatingCalculator(metrics)
-    model.calculate_credit_rating(ratios)
+    col_1, col_2 = st.columns(2)
 
-    return templates.TemplateResponse("index.html", {
-        "request": request,
-        "scores": model.scores,
-        "weighted_score": model.weighted_score,
-        "credit_rating": model.credit_rating
-    })
+    with col_1:
+        for metric in ["Debt/Equity", "Operational Margin", "Asset Turnover"]:
+            st.number_input(metric)
+
+
+ 
+
+with tab_2:
+    st.subheader("Factor Weights")
+    st.write(doc)
+
+    # col_1, col_2 = st.columns(2)
+    # with col_1:
+    row1 = st.columns(3)
+
+    for col in row1:
+        tile = col.container(height=120)
+
+    for factor in ["Profitability", "Leverage & Coverage", "Efficiency"]:
+        st.number_input(factor)
+
+
+
+with tab_3:
+    st.subheader("Rating History")
+    st.write(doc)
+
+
+
+    row1 = st.columns(3)
+
+    for col in row1:
+        tile = col.container(height=120)
+        
+st.page_link("pages/page_2.py", label="Credit Description")
+
+
+#st.page_link("main.py", label="Home", icon="🏠")
+#st.page_link("pages/page_1.py", label="Page 1", icon="1️⃣")
+# st.page_link("pages/page_2.py", label="Page 2", icon="2️⃣")
+# st.page_link("http://www.google.com", label="Google", icon="🌎")
+
