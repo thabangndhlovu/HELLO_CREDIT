@@ -42,17 +42,14 @@ with tab_2:
     st.subheader("Factor Weights")
     st.write(doc)
 
-    # col_1, col_2 = st.columns(2)
-    # with col_1:
-    row1 = st.columns(3)
+    col_1, col_2 = st.columns(2)
 
-    for col in row1:
-        tile = col.container(height=120)
+    with col_1:
+        for metric in ["Profitability", "Leverage & Coverage", "Efficiency"]:
+            st.number_input(metric)
 
-    for factor in ["Profitability", "Leverage & Coverage", "Efficiency"]:
-        st.number_input(factor)
-
-
+    with col_2:
+        st.write(doc)
 
 with tab_3:
     st.subheader("Rating History")
@@ -60,10 +57,7 @@ with tab_3:
 
 
 
-    row1 = st.columns(3)
 
-    for col in row1:
-        tile = col.container(height=120)
         
 st.page_link("pages/page_2.py", label="Credit Description")
 
