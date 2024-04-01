@@ -67,3 +67,6 @@ st.page_link("pages/page_2.py", label="Credit Description")
 # st.page_link("pages/page_2.py", label="Page 2", icon="2️⃣")
 # st.page_link("http://www.google.com", label="Google", icon="🌎")
 
+
+
+
