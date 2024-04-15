@@ -1,4 +1,4 @@
-def optimized_buckets(min_val, max_val, lower_is_better=False, num_buckets=9):
+def get_buckets(min_val, max_val, lower_is_better=False, num_buckets=9):
     """
     Generates optimized buckets based on min, max values, desired number of buckets, and whether lower values are better.
 
@@ -16,6 +16,7 @@ def optimized_buckets(min_val, max_val, lower_is_better=False, num_buckets=9):
     buckets = [(round(min_val + i * interval, 2), round(min_val + (i + 1) * interval, 2)) for i in range(num_buckets - 1)]
     buckets.append((round(max_val - interval, 2), max_val))
     return list(reversed(buckets)) if lower_is_better else buckets
+
 
 # Redefine the values and number of buckets for clarity
 min_val = 1
