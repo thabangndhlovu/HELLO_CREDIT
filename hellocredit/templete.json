@@ -169,5 +169,8 @@
         ]
       }
     }
+  },
+  "financial_policy_metrics": {
+    "class_weight": 0.0
   }
 }
