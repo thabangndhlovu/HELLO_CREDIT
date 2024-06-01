@@ -1,5 +1,5 @@
 import json
-
+import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.express as px
@@ -107,15 +107,13 @@ sector = st.selectbox("Select the sector of the company", [
 ])
 
 st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: left;} </style>', unsafe_allow_html=True)
-
 company_size = st.radio("Company Size", ["Small", "Medium", "Large"])
 
-tab_1, tab_2, tab_3, tab_4, tab_5 = st.tabs([
+  
+tab_1, tab_2, tab_3 = st.tabs([
     "Financial Metrics", 
     "Factor Weights", 
-    "Feature Importance", 
-    "Rating Projections",
-    "Executive Summary"
+    "Probabilistic Model", 
 ])
 
 
@@ -131,8 +129,35 @@ with tab_1:
                     st.metric(metric_.replace('_', ' ').title(), value)
 
         st.write("*The presented values below represent the expected (mean) metric values across time for given a timeseries.")
+        
     financial_metrics_tab_1(data)
- 
+    
+    # Define the button style using CSS
+    button_style = """
+    <style>
+    .stButton > button {
+        background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 8px;
+        display: inline-block;
+    }
+    .stButton > button:hover {
+        background-color: #45a049;
+    }
+    </style>
+    """
+
+    st.markdown(button_style, unsafe_allow_html=True)
+    if st.button("Generate Report"):
+        st.write("Model is running...")
 
 with tab_2:
     def factor_weights_tab2():
@@ -145,6 +170,14 @@ with tab_2:
         specific risk assessment criteria and industry focus, emphasising the most 
         relevant metrics for your needs.
         """)
+
+        # The Factor Weights tab allows you to customise the importance of different \
+        # financial metric categories. By tailoring these weights, you can align the 
+        # analysis with your specific risk assessment criteria and industry focus, 
+        # emphasising the metrics that matter most to you. This customisation \
+        # feature ensures that the insights provided are highly relevant to your \
+        # unique needs and preferences.
+        # """)
 
         col_1, col_2 = st.columns(2)
 
@@ -178,131 +211,52 @@ with tab_2:
         metrics['leverage_coverage_metrics']['class_weight'] = factor_weights["Leverage & Coverage"]
         metrics['profitability_metrics']['class_weight'] = factor_weights["Profitability"]
         metrics['efficiency_metrics']['class_weight'] = factor_weights["Efficiency"]
-
         policy_weight = factor_weights['Financial Policy']
-        if factor_weights['Financial Policy'] > 0:
-            st.text_input(f"Why are you giving the {'company'} {policy_weight:.2%} weighting on financial policy?")
     
     factor_weights_tab2()
 
 
 with tab_3:
-    st.subheader("Rating Contributors")
+    st.markdown("### Probabilistic Model")
 
-    import streamlit as st
-    import pandas as pd
-    import plotly.express as px
+    
 
-    # The provided data
-    data = {
-        'leverage_coverage_metrics': 4.0,
-        'efficiency_metrics': 3.1,
-        'profitability_metrics': 5.1
+    metrics = {
+        'debt_to_equity': np.random.normal(1.5, 0.2, 10),
+        'interest_coverage': np.random.normal(5, 1, 10),
+        'asset_turnover': np.random.normal(0.8, 0.1, 10),
+        'interest_expense': np.random.normal(0.05, 0.01, 10)
     }
 
-    # Converting the data into a DataFrame
-    df = pd.DataFrame(list(data.items()), columns=['Metric', 'Value'])
-
-    # Creating the horizontal bar chart using Plotly
-    fig = px.bar(df, y='Metric', x='Value', orientation='h', 
-                labels={'Value': 'Rating Score (1 is highest, 9 is lowest)'},
-                hover_data={'Value': True})
-
-    st.plotly_chart(fig, use_container_width=True)
-
-
-
-
-
-    # st.subheader("Credit Ratings (overtime)")
-    # quarters = ['Q1', 'Q2', 'Q3', 'Q4']
-    # ratings = ['A', 'Baa', 'Baa', 'C']
-    # rating_to_numeric = {'Aaa': 1, 'Aa': 2, 'A': 3, 'Baa': 4, 'Ba': 5, 'B': 6, 'Caa': 7, 'Ca': 8, 'C': 9, 'D': 10}
-
-    # df = pd.DataFrame({'Timeseries': quarters, 'Rating': ratings})
-    # df['Rating Numeric'] = df['Rating'].map(rating_to_numeric)
-
-    # fig = px.line(df, x='Timeseries', y='Rating', markers=True, title='')
-    # fig.update_yaxes(tickvals=list(rating_to_numeric.values()), ticktext=list(rating_to_numeric.keys()))
-    # fig.update_traces(mode='lines+markers', line=dict(dash='dash'))
-    # st.plotly_chart(fig)
-
-    # # Optional: Display the DataFrame
-
-
-
-with tab_4:
-    st.subheader("Credit Rating Projection")
-    st.write(doc)
-
-    # Sample projected credit rating probabilities
-    projected_probabilities = {
-        "Year": [2024, 2025, 2026, 2027, 2028],
-        "AAA": [0.05, 0.08, 0.12, 0.15, 0.20],
-        "AA+": [0.10, 0.15, 0.20, 0.25, 0.30],
-        "AA": [0.20, 0.25, 0.30, 0.35, 0.40],
-        "AA-": [0.30, 0.35, 0.40, 0.45, 0.50],
-        "A+": [0.25, 0.30, 0.35, 0.40, 0.45],
-        "A": [0.20, 0.25, 0.30, 0.35, 0.40],
-        "A-": [0.15, 0.20, 0.25, 0.30, 0.35],
-        "BBB+": [0.10, 0.15, 0.20, 0.25, 0.30],
-        "BBB": [0.05, 0.10, 0.15, 0.20, 0.25],
-        "BBB-": [0.02, 0.05, 0.10, 0.15, 0.20],
+    predictions = {
+        'debt_to_equity': 1.4354540378906038,
+        'interest_coverage': 5.010089759952652,
+        'asset_turnover': 0.8138410863739253,
+        'interest_expense': 0.05027357640453939
     }
 
-    # Create traces for each credit rating
-    traces = []
-    for rating in ["AAA", "AA+", "AA", "AA-", "A+", "A", "A-", "BBB+", "BBB", "BBB-"]:
-        trace = go.Scatter(
-            x=projected_probabilities["Year"],
-            y=projected_probabilities[rating],
-            mode="lines",
-            name=rating,
-            fill="tonexty",
-            opacity=0.7,
-        )
-        traces.append(trace)
-
-    # Create the layout for the chart
-    layout = go.Layout(
-        title="Credit Rating Projection (Probabilistic)",
-        xaxis=dict(title="Year", tickmode="linear"),
-        yaxis=dict(title="Probability", range=[0, 1], tickformat=".0%"),
-        showlegend=True,
-        hovermode="x",
-    )
-
-    # Create the figure and add the traces
-    fig = go.Figure(data=traces, layout=layout)
-
-    # Display the chart in Streamlit
-    st.plotly_chart(fig)
+    def generate_predictions(metrics: dict) -> dict:
+        import pymc as pm
+        import numpy as np
+        
+        with pm.Model() as model:
+            priors = {
+                metric: pm.Normal(f'{metric}_prior', mu=values[-1], sigma=np.std(values))
+                for metric, values in metrics.items()
+            }
+            likelihoods = {
+                metric: pm.Normal(f'{metric}_likelihood', mu=priors[metric], sigma=np.std(values), observed=values)
+                for metric, values in metrics.items()
+            }
+            trace = pm.sample(1000, tune=1000)
+        predictions = {metric: np.mean(trace.posterior[f'{metric}_prior'].values) for metric in metrics}
+        return predictions
 
 
-with tab_5:
-    col_1, col_2 = st.columns(2)
-
-    st.markdown(
-    """
-    ### Executive Summary
-    BANANA Capital Ltd. is a private investment and financial services company specializing in venture capital, private equity, and asset management. 
-    The company has shown steady growth since its incorporation, with a diverse portfolio in technology, healthcare, and renewable energy sectors.
-
-    ### Credit Rating
-    
-    Credit Rating: A (Stable)
-    
-    Rating Agency: ABC Credit Rating Agency
-
-    ### Conclusion
-    BANANA Capital Ltd. is a financially stable and well-managed company with a solid track record in the investment and financial services industry. 
-    The company’s prudent financial practices and diverse investment portfolio position it well for continued growth and stable returns. 
-    The current credit rating of A (Stable) reflects confidence in the company’s ability to meet its financial obligations and sustain its operational success.
-    """
-    )
 
 
-re_run_button = st.button("Run Model", key="run_model")
+
+
 
 
 # st.page_link("pages/page_2.py", label="Credit Description")
