@@ -90,10 +90,6 @@ with col_2:
             st.markdown("###### Credit Score")
             st.markdown(f'<h1 style="color:{credit_score_color}">{credit_score}</h1>', unsafe_allow_html=True)
 
-        
-        
-        #st.metric("", rating, 34)
-
 st.write("---")
 
 
@@ -159,6 +155,7 @@ with tab_1:
     if st.button("Generate Report"):
         st.write("Model is running...")
 
+
 with tab_2:
     def factor_weights_tab2():
         st.subheader("Factor Weights")
@@ -170,14 +167,6 @@ with tab_2:
         specific risk assessment criteria and industry focus, emphasising the most 
         relevant metrics for your needs.
         """)
-
-        # The Factor Weights tab allows you to customise the importance of different \
-        # financial metric categories. By tailoring these weights, you can align the 
-        # analysis with your specific risk assessment criteria and industry focus, 
-        # emphasising the metrics that matter most to you. This customisation \
-        # feature ensures that the insights provided are highly relevant to your \
-        # unique needs and preferences.
-        # """)
 
         col_1, col_2 = st.columns(2)
 
@@ -217,43 +206,53 @@ with tab_2:
 
 
 with tab_3:
-    st.markdown("### Probabilistic Model")
+    st.subheader("Probabilistic Model")
+    st.write("""
+    The Probabilistic Model enables you to predict various financial metrics and 
+    credit ratings using Bayesian analysis. The Model Config tab allows you to 
+    specify the number of periods, iterations, tolerance for convergence, and 
+    hyperparameters for the precision of the Gaussian priors.        
+    """)
 
+    def plot_tab3_probabilistic_model():
+        pass
+
+    credit_ratings = [("Aaa", 2.5), ("Aa", 3.5), ("A", 4.5), ("Baa", 5.5), ("Ba", 6.5), ("B", 7.5), ("Caa", 8.5), ("Ca", 9.5), ("C", float("inf"))]
+    actual_ratings = ['Baa', 'Baa', 'Baa', 'Baa', 'Baa', 'B']
+    time_periods = ['Q1', 'Q2', 'Q3', 'Q4', 'Prediction 1', 'Prediction 2']
+
+    rating_dict = dict(credit_ratings)
+    actual_values = [rating_dict[rating] for rating in actual_ratings]
+
+    # Determine the index where predictions start
+    prediction_start_index = time_periods.index('Prediction 1')
+
+    fig = go.Figure(data=[
+        go.Scatter(x=time_periods, y=actual_values + [actual_values[-1]], mode='lines+markers+text', name='Ratings',
+                line=dict(color='#052D3A'), text=[f'{rating}<br>({value})' for rating, value in zip(actual_ratings, actual_values)] + [f'{actual_ratings[-1]}<br>({actual_values[-1]})'],
+                textposition='top center', textfont=dict(size=12),
+                marker=dict(color=['#052D3A'] * prediction_start_index + ['#4CAF50'] * (len(actual_values) - prediction_start_index), size=[15] * prediction_start_index + [17] * (len(actual_values) - prediction_start_index)))
+    ])
+
+    # Add gray shading for prediction periods
+    fig.add_vrect(x0=time_periods[prediction_start_index], x1=time_periods[-1],
+                fillcolor="gray", opacity=0.2, layer="below", line_width=0)
+
+    fig.update_layout(title='Credit Rating Over Time', xaxis_title='Time Period', yaxis_title='Credit Rating')
+    fig.update_yaxes(autorange="reversed", tickvals=list(rating_dict.values()), ticktext=list(rating_dict.keys()))
+
+    st.plotly_chart(fig)
     
+    with st.expander("Model Config"):
+        periods = st.number_input("Number of Periods: ", 1)
+        col_1, col_2 = st.columns(2)
+        with col_1:
+            n_iter = st.number_input("Number of Iterations: ", 300)
+        with col_2:
+            tol = st.number_input("Tolerance for Convergence: ", 1e-3, format="%e")
 
-    metrics = {
-        'debt_to_equity': np.random.normal(1.5, 0.2, 10),
-        'interest_coverage': np.random.normal(5, 1, 10),
-        'asset_turnover': np.random.normal(0.8, 0.1, 10),
-        'interest_expense': np.random.normal(0.05, 0.01, 10)
-    }
-
-    predictions = {
-        'debt_to_equity': 1.4354540378906038,
-        'interest_coverage': 5.010089759952652,
-        'asset_turnover': 0.8138410863739253,
-        'interest_expense': 0.05027357640453939
-    }
-
-    def generate_predictions(metrics: dict) -> dict:
-        import pymc as pm
-        import numpy as np
-        
-        with pm.Model() as model:
-            priors = {
-                metric: pm.Normal(f'{metric}_prior', mu=values[-1], sigma=np.std(values))
-                for metric, values in metrics.items()
-            }
-            likelihoods = {
-                metric: pm.Normal(f'{metric}_likelihood', mu=priors[metric], sigma=np.std(values), observed=values)
-                for metric, values in metrics.items()
-            }
-            trace = pm.sample(1000, tune=1000)
-        predictions = {metric: np.mean(trace.posterior[f'{metric}_prior'].values) for metric in metrics}
-        return predictions
-
-
-
+        if st.button("Re-Run Model"):
+            st.write("Model is running...")
 
 
 
