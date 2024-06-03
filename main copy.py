@@ -233,8 +233,9 @@ with tab_4:
     st.write("""
     """)
 
-    tab_1, tab_2 = st.tabs(["Summary Table","Feature Contribution"])
-    with tab_1:
+    tab_1, tab_2 = st.tabs(["Feature Contribution", "Summary Table"])
+    
+    with tab_2:
         summary_table = output_dict["calculator_output"]["metrics"]
 
         summary_table_df = pd.DataFrame.from_dict(summary_table, orient='index')
@@ -243,36 +244,33 @@ with tab_4:
         summary_table_df['Category'] = summary_table_df['Category'].apply(lambda x: x.replace('_', ' ').title().replace('Metrics', '').strip())
         st.dataframe(summary_table_df)
 
-    with tab_2:
+    with tab_1:
         class_scores = output_dict["calculator_output"]["scores"]
    
-        # Sample data and credit ratings
-        credit_ratings = [
-            ("Aaa", 2.5), ("Aa", 3.5), ("A", 4.5), ("Baa", 5.5), ("Ba", 6.5), 
-            ("B", 7.5), ("Caa", 8.5), ("Ca", 9.5), ("C", float("inf"))
-        ]
-
-        # Function to assign credit rating
         def assign_credit_rating(value):
+            credit_ratings = [
+                ("Aaa", 2.5), ("Aa", 3.5), ("A", 4.5), ("Baa", 5.5), ("Ba", 6.5), 
+                ("B", 7.5), ("Caa", 8.5), ("Ca", 9.5), ("C", float("inf"))
+            ]
             return next(rating for rating, threshold in credit_ratings if value <= threshold)
 
         # Extracting data and assigning ratings
         categories, values = list(class_scores.keys()), list(class_scores.values())
         ratings = [assign_credit_rating(v) for v in values]
 
-        # Normalize values to a scale of 100
         total_value = sum(values)
         normalized_values = [(v / total_value) * 100 for v in values]
 
         # Adding each feature as a segment of the single bar
         fig = go.Figure()
         for category, original_value, normalized_value, rating in zip(categories, values, normalized_values, ratings):
+            category = category.replace("_", " ").replace("metrics", "").title().strip()
             fig.add_trace(go.Bar(
                 y=[""],
                 x=[normalized_value],
                 name=category,
                 orientation='h',
-                text=f'{category}: {original_value:.2f} ({rating})',
+                text=f'{category}: \n{original_value:.2f} ({rating})',
                 textposition='inside',
                 insidetextanchor='middle',
                 hoverinfo='text'
