@@ -1,1 +1,819 @@
-{"company_name": null, "rating_description": "Issuers assessed Baa are judged to have medium-grade intrinsic, or standalone, financial strength, and thus subject to moderate credit risk and, as such, may possess certain speculative credit elements absent any possibility of extraordinary support from an affiliate or a government.", "company_expected_metrics": {"leverage_coverage_metrics": {"debt_to_equity": 1.175, "debt_to_ebitda": 3.5, "ebitda_to_interest_expense": 7.925, "debt_to_tangible_assets": 0.6}, "efficiency_metrics": {"asset_turnover": 1.8, "inventory_to_cost_of_sales": 0.4, "cash_to_assets": 0.2}, "profitability_metrics": {"ebitda_margin": 18.125, "total_assets": 50750000.0, "sales_growth": 12.125}}, "company_period_metrics": {"0": {"leverage_coverage_metrics": {"debt_to_equity": 1.2, "debt_to_ebitda": 3.5, "ebitda_to_interest_expense": 8.0, "debt_to_tangible_assets": 0.6}, "efficiency_metrics": {"asset_turnover": 1.8, "inventory_to_cost_of_sales": 0.4, "cash_to_assets": 0.2}, "profitability_metrics": {"ebitda_margin": 18.0, "total_assets": 50000000.0, "sales_growth": 12.0}}, "1": {"leverage_coverage_metrics": {"debt_to_equity": 1.0, "debt_to_ebitda": 3.6, "ebitda_to_interest_expense": 7.5, "debt_to_tangible_assets": 0.7}, "efficiency_metrics": {"asset_turnover": 1.7, "inventory_to_cost_of_sales": 0.5, "cash_to_assets": 0.25}, "profitability_metrics": {"ebitda_margin": 19.0, "total_assets": 52000000.0, "sales_growth": 13.0}}, "2": {"leverage_coverage_metrics": {"debt_to_equity": 1.3, "debt_to_ebitda": 3.4, "ebitda_to_interest_expense": 8.2, "debt_to_tangible_assets": 0.5}, "efficiency_metrics": {"asset_turnover": 1.9, "inventory_to_cost_of_sales": 0.3, "cash_to_assets": 0.15}, "profitability_metrics": {"ebitda_margin": 17.5, "total_assets": 51000000.0, "sales_growth": 11.5}}, "3": {"leverage_coverage_metrics": {"debt_to_equity": 1.2, "debt_to_ebitda": 3.5, "ebitda_to_interest_expense": 8.0, "debt_to_tangible_assets": 0.6}, "efficiency_metrics": {"asset_turnover": 1.8, "inventory_to_cost_of_sales": 0.4, "cash_to_assets": 0.2}, "profitability_metrics": {"ebitda_margin": 18.0, "total_assets": 50000000.0, "sales_growth": 12.0}}}, "calculator_output": {"metrics": {"ebitda_margin": {"category": "profitability_metrics", "value": 18.125, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "total_assets": {"category": "profitability_metrics", "value": 50750000.0, "score": 3, "weight": 0.3, "weighted_score": 0.8999999999999999, "rating": "Aa"}, "sales_growth": {"category": "profitability_metrics", "value": 12.125, "score": 6, "weight": 0.3, "weighted_score": 1.7999999999999998, "rating": "Ba"}, "debt_to_equity": {"category": "leverage_coverage_metrics", "value": 1.175, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "debt_to_ebitda": {"category": "leverage_coverage_metrics", "value": 3.5, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "ebitda_to_interest_expense": {"category": "leverage_coverage_metrics", "value": 7.925, "score": 4, "weight": 0.2, "weighted_score": 0.8, "rating": "A"}, "debt_to_tangible_assets": {"category": "leverage_coverage_metrics", "value": 0.6, "score": 3, "weight": 0.4, "weighted_score": 1.2000000000000002, "rating": "Aa"}, "asset_turnover": {"category": "efficiency_metrics", "value": 1.8, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "inventory_to_cost_of_sales": {"category": "efficiency_metrics", "value": 0.4, "score": 4, "weight": 0.3, "weighted_score": 1.2, "rating": "A"}, "cash_to_assets": {"category": "efficiency_metrics", "value": 0.2, "score": 5, "weight": 0.3, "weighted_score": 1.5, "rating": "Baa"}}, "scores": {"profitability_metrics": 5.1, "leverage_coverage_metrics": 4.0, "efficiency_metrics": 5.1000000000000005}, "credit_score": 4.733333333333333, "credit_rating": "Baa"}, "calculator_periods_output": {"0": {"metrics": {"ebitda_margin": {"category": "profitability_metrics", "value": 18.0, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "total_assets": {"category": "profitability_metrics", "value": 50000000.0, "score": 3, "weight": 0.3, "weighted_score": 0.8999999999999999, "rating": "Aa"}, "sales_growth": {"category": "profitability_metrics", "value": 12.0, "score": 6, "weight": 0.3, "weighted_score": 1.7999999999999998, "rating": "Ba"}, "debt_to_equity": {"category": "leverage_coverage_metrics", "value": 1.2, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "debt_to_ebitda": {"category": "leverage_coverage_metrics", "value": 3.5, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "ebitda_to_interest_expense": {"category": "leverage_coverage_metrics", "value": 8.0, "score": 4, "weight": 0.2, "weighted_score": 0.8, "rating": "A"}, "debt_to_tangible_assets": {"category": "leverage_coverage_metrics", "value": 0.6, "score": 3, "weight": 0.4, "weighted_score": 1.2000000000000002, "rating": "Aa"}, "asset_turnover": {"category": "efficiency_metrics", "value": 1.8, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "inventory_to_cost_of_sales": {"category": "efficiency_metrics", "value": 0.4, "score": 4, "weight": 0.3, "weighted_score": 1.2, "rating": "A"}, "cash_to_assets": {"category": "efficiency_metrics", "value": 0.2, "score": 5, "weight": 0.3, "weighted_score": 1.5, "rating": "Baa"}}, "scores": {"profitability_metrics": 5.1, "leverage_coverage_metrics": 4.0, "efficiency_metrics": 5.1000000000000005}, "credit_score": 4.733333333333333, "credit_rating": "Baa"}, "1": {"metrics": {"ebitda_margin": {"category": "profitability_metrics", "value": 19.0, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "total_assets": {"category": "profitability_metrics", "value": 52000000.0, "score": 3, "weight": 0.3, "weighted_score": 0.8999999999999999, "rating": "Aa"}, "sales_growth": {"category": "profitability_metrics", "value": 13.0, "score": 6, "weight": 0.3, "weighted_score": 1.7999999999999998, "rating": "Ba"}, "debt_to_equity": {"category": "leverage_coverage_metrics", "value": 1.0, "score": 4, "weight": 0.2, "weighted_score": 0.8, "rating": "A"}, "debt_to_ebitda": {"category": "leverage_coverage_metrics", "value": 3.6, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "ebitda_to_interest_expense": {"category": "leverage_coverage_metrics", "value": 7.5, "score": 4, "weight": 0.2, "weighted_score": 0.8, "rating": "A"}, "debt_to_tangible_assets": {"category": "leverage_coverage_metrics", "value": 0.7, "score": 4, "weight": 0.4, "weighted_score": 1.6, "rating": "A"}, "asset_turnover": {"category": "efficiency_metrics", "value": 1.7, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "inventory_to_cost_of_sales": {"category": "efficiency_metrics", "value": 0.5, "score": 5, "weight": 0.3, "weighted_score": 1.5, "rating": "Baa"}, "cash_to_assets": {"category": "efficiency_metrics", "value": 0.25, "score": 4, "weight": 0.3, "weighted_score": 1.2, "rating": "A"}}, "scores": {"profitability_metrics": 5.1, "leverage_coverage_metrics": 4.2, "efficiency_metrics": 5.1000000000000005}, "credit_score": 4.8, "credit_rating": "Baa"}, "2": {"metrics": {"ebitda_margin": {"category": "profitability_metrics", "value": 17.5, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "total_assets": {"category": "profitability_metrics", "value": 51000000.0, "score": 3, "weight": 0.3, "weighted_score": 0.8999999999999999, "rating": "Aa"}, "sales_growth": {"category": "profitability_metrics", "value": 11.5, "score": 6, "weight": 0.3, "weighted_score": 1.7999999999999998, "rating": "Ba"}, "debt_to_equity": {"category": "leverage_coverage_metrics", "value": 1.3, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "debt_to_ebitda": {"category": "leverage_coverage_metrics", "value": 3.4, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "ebitda_to_interest_expense": {"category": "leverage_coverage_metrics", "value": 8.2, "score": 4, "weight": 0.2, "weighted_score": 0.8, "rating": "A"}, "debt_to_tangible_assets": {"category": "leverage_coverage_metrics", "value": 0.5, "score": 3, "weight": 0.4, "weighted_score": 1.2000000000000002, "rating": "Aa"}, "asset_turnover": {"category": "efficiency_metrics", "value": 1.9, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "inventory_to_cost_of_sales": {"category": "efficiency_metrics", "value": 0.3, "score": 3, "weight": 0.3, "weighted_score": 0.8999999999999999, "rating": "Aa"}, "cash_to_assets": {"category": "efficiency_metrics", "value": 0.15, "score": 6, "weight": 0.3, "weighted_score": 1.7999999999999998, "rating": "Ba"}}, "scores": {"profitability_metrics": 5.1, "leverage_coverage_metrics": 4.0, "efficiency_metrics": 5.1}, "credit_score": 4.733333333333333, "credit_rating": "Baa"}, "3": {"metrics": {"ebitda_margin": {"category": "profitability_metrics", "value": 18.0, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "total_assets": {"category": "profitability_metrics", "value": 50000000.0, "score": 3, "weight": 0.3, "weighted_score": 0.8999999999999999, "rating": "Aa"}, "sales_growth": {"category": "profitability_metrics", "value": 12.0, "score": 6, "weight": 0.3, "weighted_score": 1.7999999999999998, "rating": "Ba"}, "debt_to_equity": {"category": "leverage_coverage_metrics", "value": 1.2, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "debt_to_ebitda": {"category": "leverage_coverage_metrics", "value": 3.5, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "ebitda_to_interest_expense": {"category": "leverage_coverage_metrics", "value": 8.0, "score": 4, "weight": 0.2, "weighted_score": 0.8, "rating": "A"}, "debt_to_tangible_assets": {"category": "leverage_coverage_metrics", "value": 0.6, "score": 3, "weight": 0.4, "weighted_score": 1.2000000000000002, "rating": "Aa"}, "asset_turnover": {"category": "efficiency_metrics", "value": 1.8, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "inventory_to_cost_of_sales": {"category": "efficiency_metrics", "value": 0.4, "score": 4, "weight": 0.3, "weighted_score": 1.2, "rating": "A"}, "cash_to_assets": {"category": "efficiency_metrics", "value": 0.2, "score": 5, "weight": 0.3, "weighted_score": 1.5, "rating": "Baa"}}, "scores": {"profitability_metrics": 5.1, "leverage_coverage_metrics": 4.0, "efficiency_metrics": 5.1000000000000005}, "credit_score": 4.733333333333333, "credit_rating": "Baa"}}, "bayesian_model_output": {"0": {"metrics": {"ebitda_margin": {"category": "profitability_metrics", "value": 18.12225575190843, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "total_assets": {"category": "profitability_metrics", "value": 50749999.99999818, "score": 3, "weight": 0.3, "weighted_score": 0.8999999999999999, "rating": "Aa"}, "sales_growth": {"category": "profitability_metrics", "value": 12.12225575190843, "score": 6, "weight": 0.3, "weighted_score": 1.7999999999999998, "rating": "Ba"}, "debt_to_equity": {"category": "leverage_coverage_metrics", "value": 1.177695705780691, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "debt_to_ebitda": {"category": "leverage_coverage_metrics", "value": 3.4972580246365674, "score": 5, "weight": 0.2, "weighted_score": 1.0, "rating": "Baa"}, "ebitda_to_interest_expense": {"category": "leverage_coverage_metrics", "value": 7.927637553169833, "score": 4, "weight": 0.2, "weighted_score": 0.8, "rating": "A"}, "debt_to_tangible_assets": {"category": "leverage_coverage_metrics", "value": 0.5972580246365673, "score": 3, "weight": 0.4, "weighted_score": 1.2000000000000002, "rating": "Aa"}, "asset_turnover": {"category": "efficiency_metrics", "value": 1.8027419753634326, "score": 6, "weight": 0.4, "weighted_score": 2.4000000000000004, "rating": "Ba"}, "inventory_to_cost_of_sales": {"category": "efficiency_metrics", "value": 0.39725802463656734, "score": 4, "weight": 0.3, "weighted_score": 1.2, "rating": "A"}, "cash_to_assets": {"category": "efficiency_metrics", "value": 0.19735885994940522, "score": 6, "weight": 0.3, "weighted_score": 1.7999999999999998, "rating": "Ba"}}, "scores": {"profitability_metrics": 5.1, "leverage_coverage_metrics": 4.0, "efficiency_metrics": 5.4}, "credit_score": 4.808333333333334, "credit_rating": "Baa"}}, "metrics": {"profitability_metrics": {"class_weight": 25, "metric_weights": {"ebitda_margin": 0.4, "total_assets": 0.3, "sales_growth": 0.3}, "metrics": {"ebitda_margin": {"lower_is_better": false, "thresholds": [[40.0, Infinity], [35.0, 40.0], [30.0, 35.0], [25.0, 30.0], [20.0, 25.0], [15.0, 20.0], [10.0, 15.0], [5.0, 10.0], [-Infinity, 5.0]]}, "total_assets": {"lower_is_better": false, "thresholds": [[500000000, Infinity], [100000000, 500000000], [50000000, 100000000], [10000000, 50000000], [5000000, 10000000], [1000000, 5000000], [500000, 1000000], [100000, 500000], [-Infinity, 100000]]}, "sales_growth": {"lower_is_better": false, "thresholds": [[40.0, Infinity], [30.0, 40.0], [25.0, 30.0], [20.0, 25.0], [15.0, 20.0], [10.0, 15.0], [5.0, 10.0], [0.0, 5.0], [-Infinity, 0.0]]}}}, "leverage_coverage_metrics": {"class_weight": 20, "metric_weights": {"debt_to_equity": 0.2, "debt_to_ebitda": 0.2, "ebitda_to_interest_expense": 0.2, "debt_to_tangible_assets": 0.4}, "metrics": {"debt_to_equity": {"lower_is_better": true, "thresholds": [[-Infinity, 0.25], [0.25, 0.5], [0.5, 0.75], [0.75, 1.0], [1.0, 1.5], [1.5, 2.0], [2.0, 3.0], [3.0, 5.0], [5.0, Infinity]]}, "debt_to_ebitda": {"lower_is_better": true, "thresholds": [[-Infinity, 0.5], [0.5, 1.0], [1.0, 2.0], [2.0, 3.0], [3.0, 4.5], [4.5, 6.5], [6.5, 9.0], [6.5, 9.0], [9.0, Infinity]]}, "ebitda_to_interest_expense": {"lower_is_better": false, "thresholds": [[25.0, Infinity], [15.0, 25.0], [10.0, 15.0], [6.0, 10.0], [3.0, 6.0], [1.0, 3.0], [0.0, 1.0], [0.0, 1.0], [-Infinity, 0.0]]}, "debt_to_tangible_assets": {"lower_is_better": true, "thresholds": [[-Infinity, 0.2], [0.2, 0.4], [0.4, 0.6], [0.6, 0.8], [0.8, 1.0], [1.0, 1.2], [1.2, 1.5], [1.5, 2.0], [2.0, Infinity]]}}}, "efficiency_metrics": {"class_weight": 15, "metric_weights": {"asset_turnover": 0.4, "inventory_to_cost_of_sales": 0.3, "cash_to_assets": 0.3}, "metrics": {"asset_turnover": {"lower_is_better": false, "thresholds": [[5.0, Infinity], [4.0, 5.0], [3.0, 4.0], [2.5, 3.0], [2.0, 2.5], [1.5, 2.0], [1.0, 1.5], [0.5, 1.0], [-Infinity, 0.5]]}, "inventory_to_cost_of_sales": {"lower_is_better": true, "thresholds": [[-Infinity, 0.1], [0.1, 0.2], [0.2, 0.3], [0.3, 0.4], [0.4, 0.5], [0.5, 0.6], [0.6, 0.8], [0.8, 1.0], [1.0, Infinity]]}, "cash_to_assets": {"lower_is_better": false, "thresholds": [[0.5, Infinity], [0.4, 0.5], [0.3, 0.4], [0.25, 0.3], [0.2, 0.25], [0.15, 0.2], [0.1, 0.15], [0.05, 0.1], [-Infinity, 0.05]]}}}}}
+{
+  "company_name": "BANANA Captial Ltd",
+  "rating_description": "Issuers assessed Baa are judged to have medium-grade intrinsic, or standalone, financial strength, and thus subject to moderate credit risk and, as such, may possess certain speculative credit elements absent any possibility of extraordinary support from an affiliate or a government.",
+  "company_expected_metrics": {
+    "leverage_coverage_metrics": {
+      "debt_to_equity": 1.175,
+      "debt_to_ebitda": 3.5,
+      "ebitda_to_interest_expense": 7.925,
+      "debt_to_tangible_assets": 0.6
+    },
+    "efficiency_metrics": {
+      "asset_turnover": 1.8,
+      "inventory_to_cost_of_sales": 0.4,
+      "cash_to_assets": 0.2
+    },
+    "profitability_metrics": {
+      "ebitda_margin": 18.125,
+      "total_assets": 50750000.0,
+      "sales_growth": 12.125
+    }
+  },
+  "company_period_metrics": {
+    "0": {
+      "leverage_coverage_metrics": {
+        "debt_to_equity": 1.2,
+        "debt_to_ebitda": 3.5,
+        "ebitda_to_interest_expense": 8.0,
+        "debt_to_tangible_assets": 0.6
+      },
+      "efficiency_metrics": {
+        "asset_turnover": 1.8,
+        "inventory_to_cost_of_sales": 0.4,
+        "cash_to_assets": 0.2
+      },
+      "profitability_metrics": {
+        "ebitda_margin": 18.0,
+        "total_assets": 50000000.0,
+        "sales_growth": 12.0
+      }
+    },
+    "1": {
+      "leverage_coverage_metrics": {
+        "debt_to_equity": 1.0,
+        "debt_to_ebitda": 3.6,
+        "ebitda_to_interest_expense": 7.5,
+        "debt_to_tangible_assets": 0.7
+      },
+      "efficiency_metrics": {
+        "asset_turnover": 1.7,
+        "inventory_to_cost_of_sales": 0.5,
+        "cash_to_assets": 0.25
+      },
+      "profitability_metrics": {
+        "ebitda_margin": 19.0,
+        "total_assets": 52000000.0,
+        "sales_growth": 13.0
+      }
+    },
+    "2": {
+      "leverage_coverage_metrics": {
+        "debt_to_equity": 1.3,
+        "debt_to_ebitda": 3.4,
+        "ebitda_to_interest_expense": 8.2,
+        "debt_to_tangible_assets": 0.5
+      },
+      "efficiency_metrics": {
+        "asset_turnover": 1.9,
+        "inventory_to_cost_of_sales": 0.3,
+        "cash_to_assets": 0.15
+      },
+      "profitability_metrics": {
+        "ebitda_margin": 17.5,
+        "total_assets": 51000000.0,
+        "sales_growth": 11.5
+      }
+    },
+    "3": {
+      "leverage_coverage_metrics": {
+        "debt_to_equity": 1.2,
+        "debt_to_ebitda": 3.5,
+        "ebitda_to_interest_expense": 8.0,
+        "debt_to_tangible_assets": 0.6
+      },
+      "efficiency_metrics": {
+        "asset_turnover": 1.8,
+        "inventory_to_cost_of_sales": 0.4,
+        "cash_to_assets": 0.2
+      },
+      "profitability_metrics": {
+        "ebitda_margin": 18.0,
+        "total_assets": 50000000.0,
+        "sales_growth": 12.0
+      }
+    }
+  },
+  "calculator_output": {
+    "metrics": {
+      "ebitda_margin": {
+        "category": "profitability_metrics",
+        "value": 18.125,
+        "score": 6,
+        "weight": 0.4,
+        "weighted_score": 2.4000000000000004,
+        "rating": "Ba"
+      },
+      "total_assets": {
+        "category": "profitability_metrics",
+        "value": 50750000.0,
+        "score": 3,
+        "weight": 0.3,
+        "weighted_score": 0.8999999999999999,
+        "rating": "Aa"
+      },
+      "sales_growth": {
+        "category": "profitability_metrics",
+        "value": 12.125,
+        "score": 6,
+        "weight": 0.3,
+        "weighted_score": 1.7999999999999998,
+        "rating": "Ba"
+      },
+      "debt_to_equity": {
+        "category": "leverage_coverage_metrics",
+        "value": 1.175,
+        "score": 5,
+        "weight": 0.2,
+        "weighted_score": 1.0,
+        "rating": "Baa"
+      },
+      "debt_to_ebitda": {
+        "category": "leverage_coverage_metrics",
+        "value": 3.5,
+        "score": 5,
+        "weight": 0.2,
+        "weighted_score": 1.0,
+        "rating": "Baa"
+      },
+      "ebitda_to_interest_expense": {
+        "category": "leverage_coverage_metrics",
+        "value": 7.925,
+        "score": 4,
+        "weight": 0.2,
+        "weighted_score": 0.8,
+        "rating": "A"
+      },
+      "debt_to_tangible_assets": {
+        "category": "leverage_coverage_metrics",
+        "value": 0.6,
+        "score": 3,
+        "weight": 0.4,
+        "weighted_score": 1.2000000000000002,
+        "rating": "Aa"
+      },
+      "asset_turnover": {
+        "category": "efficiency_metrics",
+        "value": 1.8,
+        "score": 6,
+        "weight": 0.4,
+        "weighted_score": 2.4000000000000004,
+        "rating": "Ba"
+      },
+      "inventory_to_cost_of_sales": {
+        "category": "efficiency_metrics",
+        "value": 0.4,
+        "score": 4,
+        "weight": 0.3,
+        "weighted_score": 1.2,
+        "rating": "A"
+      },
+      "cash_to_assets": {
+        "category": "efficiency_metrics",
+        "value": 0.2,
+        "score": 5,
+        "weight": 0.3,
+        "weighted_score": 1.5,
+        "rating": "Baa"
+      }
+    },
+    "scores": {
+      "profitability_metrics": 5.1,
+      "leverage_coverage_metrics": 4.0,
+      "efficiency_metrics": 5.1000000000000005
+    },
+    "credit_score": 4.733333333333333,
+    "credit_rating": "Baa"
+  },
+  "calculator_periods_output": {
+    "0": {
+      "metrics": {
+        "ebitda_margin": {
+          "category": "profitability_metrics",
+          "value": 18.0,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "total_assets": {
+          "category": "profitability_metrics",
+          "value": 50000000.0,
+          "score": 3,
+          "weight": 0.3,
+          "weighted_score": 0.8999999999999999,
+          "rating": "Aa"
+        },
+        "sales_growth": {
+          "category": "profitability_metrics",
+          "value": 12.0,
+          "score": 6,
+          "weight": 0.3,
+          "weighted_score": 1.7999999999999998,
+          "rating": "Ba"
+        },
+        "debt_to_equity": {
+          "category": "leverage_coverage_metrics",
+          "value": 1.2,
+          "score": 5,
+          "weight": 0.2,
+          "weighted_score": 1.0,
+          "rating": "Baa"
+        },
+        "debt_to_ebitda": {
+          "category": "leverage_coverage_metrics",
+          "value": 3.5,
+          "score": 5,
+          "weight": 0.2,
+          "weighted_score": 1.0,
+          "rating": "Baa"
+        },
+        "ebitda_to_interest_expense": {
+          "category": "leverage_coverage_metrics",
+          "value": 8.0,
+          "score": 4,
+          "weight": 0.2,
+          "weighted_score": 0.8,
+          "rating": "A"
+        },
+        "debt_to_tangible_assets": {
+          "category": "leverage_coverage_metrics",
+          "value": 0.6,
+          "score": 3,
+          "weight": 0.4,
+          "weighted_score": 1.2000000000000002,
+          "rating": "Aa"
+        },
+        "asset_turnover": {
+          "category": "efficiency_metrics",
+          "value": 1.8,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "inventory_to_cost_of_sales": {
+          "category": "efficiency_metrics",
+          "value": 0.4,
+          "score": 4,
+          "weight": 0.3,
+          "weighted_score": 1.2,
+          "rating": "A"
+        },
+        "cash_to_assets": {
+          "category": "efficiency_metrics",
+          "value": 0.2,
+          "score": 5,
+          "weight": 0.3,
+          "weighted_score": 1.5,
+          "rating": "Baa"
+        }
+      },
+      "scores": {
+        "profitability_metrics": 5.1,
+        "leverage_coverage_metrics": 4.0,
+        "efficiency_metrics": 5.1000000000000005
+      },
+      "credit_score": 4.733333333333333,
+      "credit_rating": "Baa"
+    },
+    "1": {
+      "metrics": {
+        "ebitda_margin": {
+          "category": "profitability_metrics",
+          "value": 19.0,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "total_assets": {
+          "category": "profitability_metrics",
+          "value": 52000000.0,
+          "score": 3,
+          "weight": 0.3,
+          "weighted_score": 0.8999999999999999,
+          "rating": "Aa"
+        },
+        "sales_growth": {
+          "category": "profitability_metrics",
+          "value": 13.0,
+          "score": 6,
+          "weight": 0.3,
+          "weighted_score": 1.7999999999999998,
+          "rating": "Ba"
+        },
+        "debt_to_equity": {
+          "category": "leverage_coverage_metrics",
+          "value": 1.0,
+          "score": 4,
+          "weight": 0.2,
+          "weighted_score": 0.8,
+          "rating": "A"
+        },
+        "debt_to_ebitda": {
+          "category": "leverage_coverage_metrics",
+          "value": 3.6,
+          "score": 5,
+          "weight": 0.2,
+          "weighted_score": 1.0,
+          "rating": "Baa"
+        },
+        "ebitda_to_interest_expense": {
+          "category": "leverage_coverage_metrics",
+          "value": 7.5,
+          "score": 4,
+          "weight": 0.2,
+          "weighted_score": 0.8,
+          "rating": "A"
+        },
+        "debt_to_tangible_assets": {
+          "category": "leverage_coverage_metrics",
+          "value": 0.7,
+          "score": 4,
+          "weight": 0.4,
+          "weighted_score": 1.6,
+          "rating": "A"
+        },
+        "asset_turnover": {
+          "category": "efficiency_metrics",
+          "value": 1.7,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "inventory_to_cost_of_sales": {
+          "category": "efficiency_metrics",
+          "value": 0.5,
+          "score": 5,
+          "weight": 0.3,
+          "weighted_score": 1.5,
+          "rating": "Baa"
+        },
+        "cash_to_assets": {
+          "category": "efficiency_metrics",
+          "value": 0.25,
+          "score": 4,
+          "weight": 0.3,
+          "weighted_score": 1.2,
+          "rating": "A"
+        }
+      },
+      "scores": {
+        "profitability_metrics": 5.1,
+        "leverage_coverage_metrics": 4.2,
+        "efficiency_metrics": 5.1000000000000005
+      },
+      "credit_score": 4.8,
+      "credit_rating": "Baa"
+    },
+    "2": {
+      "metrics": {
+        "ebitda_margin": {
+          "category": "profitability_metrics",
+          "value": 17.5,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "total_assets": {
+          "category": "profitability_metrics",
+          "value": 51000000.0,
+          "score": 3,
+          "weight": 0.3,
+          "weighted_score": 0.8999999999999999,
+          "rating": "Aa"
+        },
+        "sales_growth": {
+          "category": "profitability_metrics",
+          "value": 11.5,
+          "score": 6,
+          "weight": 0.3,
+          "weighted_score": 1.7999999999999998,
+          "rating": "Ba"
+        },
+        "debt_to_equity": {
+          "category": "leverage_coverage_metrics",
+          "value": 1.3,
+          "score": 5,
+          "weight": 0.2,
+          "weighted_score": 1.0,
+          "rating": "Baa"
+        },
+        "debt_to_ebitda": {
+          "category": "leverage_coverage_metrics",
+          "value": 3.4,
+          "score": 5,
+          "weight": 0.2,
+          "weighted_score": 1.0,
+          "rating": "Baa"
+        },
+        "ebitda_to_interest_expense": {
+          "category": "leverage_coverage_metrics",
+          "value": 8.2,
+          "score": 4,
+          "weight": 0.2,
+          "weighted_score": 0.8,
+          "rating": "A"
+        },
+        "debt_to_tangible_assets": {
+          "category": "leverage_coverage_metrics",
+          "value": 0.5,
+          "score": 3,
+          "weight": 0.4,
+          "weighted_score": 1.2000000000000002,
+          "rating": "Aa"
+        },
+        "asset_turnover": {
+          "category": "efficiency_metrics",
+          "value": 1.9,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "inventory_to_cost_of_sales": {
+          "category": "efficiency_metrics",
+          "value": 0.3,
+          "score": 3,
+          "weight": 0.3,
+          "weighted_score": 0.8999999999999999,
+          "rating": "Aa"
+        },
+        "cash_to_assets": {
+          "category": "efficiency_metrics",
+          "value": 0.15,
+          "score": 6,
+          "weight": 0.3,
+          "weighted_score": 1.7999999999999998,
+          "rating": "Ba"
+        }
+      },
+      "scores": {
+        "profitability_metrics": 5.1,
+        "leverage_coverage_metrics": 4.0,
+        "efficiency_metrics": 5.1
+      },
+      "credit_score": 4.733333333333333,
+      "credit_rating": "Baa"
+    },
+    "3": {
+      "metrics": {
+        "ebitda_margin": {
+          "category": "profitability_metrics",
+          "value": 18.0,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "total_assets": {
+          "category": "profitability_metrics",
+          "value": 50000000.0,
+          "score": 3,
+          "weight": 0.3,
+          "weighted_score": 0.8999999999999999,
+          "rating": "Aa"
+        },
+        "sales_growth": {
+          "category": "profitability_metrics",
+          "value": 12.0,
+          "score": 6,
+          "weight": 0.3,
+          "weighted_score": 1.7999999999999998,
+          "rating": "Ba"
+        },
+        "debt_to_equity": {
+          "category": "leverage_coverage_metrics",
+          "value": 1.2,
+          "score": 5,
+          "weight": 0.2,
+          "weighted_score": 1.0,
+          "rating": "Baa"
+        },
+        "debt_to_ebitda": {
+          "category": "leverage_coverage_metrics",
+          "value": 3.5,
+          "score": 5,
+          "weight": 0.2,
+          "weighted_score": 1.0,
+          "rating": "Baa"
+        },
+        "ebitda_to_interest_expense": {
+          "category": "leverage_coverage_metrics",
+          "value": 8.0,
+          "score": 4,
+          "weight": 0.2,
+          "weighted_score": 0.8,
+          "rating": "A"
+        },
+        "debt_to_tangible_assets": {
+          "category": "leverage_coverage_metrics",
+          "value": 0.6,
+          "score": 3,
+          "weight": 0.4,
+          "weighted_score": 1.2000000000000002,
+          "rating": "Aa"
+        },
+        "asset_turnover": {
+          "category": "efficiency_metrics",
+          "value": 1.8,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "inventory_to_cost_of_sales": {
+          "category": "efficiency_metrics",
+          "value": 0.4,
+          "score": 4,
+          "weight": 0.3,
+          "weighted_score": 1.2,
+          "rating": "A"
+        },
+        "cash_to_assets": {
+          "category": "efficiency_metrics",
+          "value": 0.2,
+          "score": 5,
+          "weight": 0.3,
+          "weighted_score": 1.5,
+          "rating": "Baa"
+        }
+      },
+      "scores": {
+        "profitability_metrics": 5.1,
+        "leverage_coverage_metrics": 4.0,
+        "efficiency_metrics": 5.1000000000000005
+      },
+      "credit_score": 4.733333333333333,
+      "credit_rating": "Baa"
+    }
+  },
+  "bayesian_model_output": {
+    "0": {
+      "metrics": {
+        "ebitda_margin": {
+          "category": "profitability_metrics",
+          "value": 18.12225575190843,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "total_assets": {
+          "category": "profitability_metrics",
+          "value": 50749999.99999818,
+          "score": 3,
+          "weight": 0.3,
+          "weighted_score": 0.8999999999999999,
+          "rating": "Aa"
+        },
+        "sales_growth": {
+          "category": "profitability_metrics",
+          "value": 12.12225575190843,
+          "score": 6,
+          "weight": 0.3,
+          "weighted_score": 1.7999999999999998,
+          "rating": "Ba"
+        },
+        "debt_to_equity": {
+          "category": "leverage_coverage_metrics",
+          "value": 1.177695705780691,
+          "score": 5,
+          "weight": 0.2,
+          "weighted_score": 1.0,
+          "rating": "Baa"
+        },
+        "debt_to_ebitda": {
+          "category": "leverage_coverage_metrics",
+          "value": 3.4972580246365674,
+          "score": 5,
+          "weight": 0.2,
+          "weighted_score": 1.0,
+          "rating": "Baa"
+        },
+        "ebitda_to_interest_expense": {
+          "category": "leverage_coverage_metrics",
+          "value": 7.927637553169833,
+          "score": 4,
+          "weight": 0.2,
+          "weighted_score": 0.8,
+          "rating": "A"
+        },
+        "debt_to_tangible_assets": {
+          "category": "leverage_coverage_metrics",
+          "value": 0.5972580246365673,
+          "score": 3,
+          "weight": 0.4,
+          "weighted_score": 1.2000000000000002,
+          "rating": "Aa"
+        },
+        "asset_turnover": {
+          "category": "efficiency_metrics",
+          "value": 1.8027419753634326,
+          "score": 6,
+          "weight": 0.4,
+          "weighted_score": 2.4000000000000004,
+          "rating": "Ba"
+        },
+        "inventory_to_cost_of_sales": {
+          "category": "efficiency_metrics",
+          "value": 0.39725802463656734,
+          "score": 4,
+          "weight": 0.3,
+          "weighted_score": 1.2,
+          "rating": "A"
+        },
+        "cash_to_assets": {
+          "category": "efficiency_metrics",
+          "value": 0.19735885994940522,
+          "score": 6,
+          "weight": 0.3,
+          "weighted_score": 1.7999999999999998,
+          "rating": "Ba"
+        }
+      },
+      "scores": {
+        "profitability_metrics": 5.1,
+        "leverage_coverage_metrics": 4.0,
+        "efficiency_metrics": 5.4
+      },
+      "credit_score": 4.808333333333334,
+      "credit_rating": "Baa"
+    }
+  },
+  "metrics": {
+    "profitability_metrics": {
+      "class_weight": 25,
+      "metric_weights": {
+        "ebitda_margin": 0.4,
+        "total_assets": 0.3,
+        "sales_growth": 0.3
+      },
+      "metrics": {
+        "ebitda_margin": {
+          "lower_is_better": false,
+          "thresholds": [
+            [40.0, 100000000],
+            [35.0, 40.0],
+            [30.0, 35.0],
+            [25.0, 30.0],
+            [20.0, 25.0],
+            [15.0, 20.0],
+            [10.0, 15.0],
+            [5.0, 10.0],
+            [-100000000, 5.0]
+          ]
+        },
+        "total_assets": {
+          "lower_is_better": false,
+          "thresholds": [
+            [500000000, 10000000000],
+            [100000000, 500000000],
+            [50000000, 100000000],
+            [10000000, 50000000],
+            [5000000, 10000000],
+            [1000000, 5000000],
+            [500000, 1000000],
+            [100000, 500000],
+            [-10000000000, 100000]
+          ]
+        },
+        "sales_growth": {
+          "lower_is_better": false,
+          "thresholds": [
+            [40.0, 100000000],
+            [30.0, 40.0],
+            [25.0, 30.0],
+            [20.0, 25.0],
+            [15.0, 20.0],
+            [10.0, 15.0],
+            [5.0, 10.0],
+            [0.0, 5.0],
+            [-100000000, 0.0]
+          ]
+        }
+      }
+    },
+    "leverage_coverage_metrics": {
+      "class_weight": 20,
+      "metric_weights": {
+        "debt_to_equity": 0.2,
+        "debt_to_ebitda": 0.2,
+        "ebitda_to_interest_expense": 0.2,
+        "debt_to_tangible_assets": 0.4
+      },
+      "metrics": {
+        "debt_to_equity": {
+          "lower_is_better": true,
+          "thresholds": [
+            [-100000000, 0.25],
+            [0.25, 0.5],
+            [0.5, 0.75],
+            [0.75, 1.0],
+            [1.0, 1.5],
+            [1.5, 2.0],
+            [2.0, 3.0],
+            [3.0, 5.0],
+            [5.0, 100000000]
+          ]
+        },
+        "debt_to_ebitda": {
+          "lower_is_better": true,
+          "thresholds": [
+            [-100000000, 0.5],
+            [0.5, 1.0],
+            [1.0, 2.0],
+            [2.0, 3.0],
+            [3.0, 4.5],
+            [4.5, 6.5],
+            [6.5, 9.0],
+            [6.5, 9.0],
+            [9.0, 100000000]
+          ]
+        },
+        "ebitda_to_interest_expense": {
+          "lower_is_better": false,
+          "thresholds": [
+            [25.0, 100000000],
+            [15.0, 25.0],
+            [10.0, 15.0],
+            [6.0, 10.0],
+            [3.0, 6.0],
+            [1.0, 3.0],
+            [0.0, 1.0],
+            [0.0, 1.0],
+            [-100000000, 0.0]
+          ]
+        },
+        "debt_to_tangible_assets": {
+          "lower_is_better": true,
+          "thresholds": [
+            [-100000000, 0.2],
+            [0.2, 0.4],
+            [0.4, 0.6],
+            [0.6, 0.8],
+            [0.8, 1.0],
+            [1.0, 1.2],
+            [1.2, 1.5],
+            [1.5, 2.0],
+            [2.0, 100000000]
+          ]
+        }
+      }
+    },
+    "efficiency_metrics": {
+      "class_weight": 15,
+      "metric_weights": {
+        "asset_turnover": 0.4,
+        "inventory_to_cost_of_sales": 0.3,
+        "cash_to_assets": 0.3
+      },
+      "metrics": {
+        "asset_turnover": {
+          "lower_is_better": false,
+          "thresholds": [
+            [5.0, 100000000],
+            [4.0, 5.0],
+            [3.0, 4.0],
+            [2.5, 3.0],
+            [2.0, 2.5],
+            [1.5, 2.0],
+            [1.0, 1.5],
+            [0.5, 1.0],
+            [-100000000, 0.5]
+          ]
+        },
+        "inventory_to_cost_of_sales": {
+          "lower_is_better": true,
+          "thresholds": [
+            [-100000000, 0.1],
+            [0.1, 0.2],
+            [0.2, 0.3],
+            [0.3, 0.4],
+            [0.4, 0.5],
+            [0.5, 0.6],
+            [0.6, 0.8],
+            [0.8, 1.0],
+            [1.0, 100000000]
+          ]
+        },
+        "cash_to_assets": {
+          "lower_is_better": false,
+          "thresholds": [
+            [0.5, 100000000],
+            [0.4, 0.5],
+            [0.3, 0.4],
+            [0.25, 0.3],
+            [0.2, 0.25],
+            [0.15, 0.2],
+            [0.1, 0.15],
+            [0.05, 0.1],
+            [-100000000, 0.05]
+          ]
+        }
+      }
+    }
+  }
+}

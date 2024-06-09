@@ -7,6 +7,16 @@ import plotly.graph_objects as go
 
 from hellocredit import CreditRatingCalculator
 
+def _determine_credit_rating(score):
+    credit_ratings = [
+        ("Aaa", 2.5), ("Aa", 3.5), ("A", 4.5), ("Baa", 5.5),
+        ("Ba", 6.5), ("B", 7.5), ("Caa", 8.5), ("Ca", 9.5),
+        ("C", float("inf")),
+    ]
+    for rating, threshold in credit_ratings:
+        if score <= threshold:
+            return rating
+
 
 with open("output.json", "r") as f:
     output_dict = json.load(f)
@@ -16,14 +26,21 @@ st.markdown("#### CreditWatch.")
 
 
 
+policy_weight = 0.0
+
 # CREDIT RATING SECTION
 ###############################################################################
 
+#policy_weight = output_dict["financial_policy_weight"]
 
 company_name = output_dict["company_name"]
 rating_description = output_dict["rating_description"]
-credit_score = output_dict["calculator_output"]["credit_score"]
-credit_rating = output_dict["calculator_output"]["credit_rating"]
+credit_score = output_dict["calculator_output"]["credit_score"] 
+
+if policy_weight > 0.01:
+    credit_score *= policy_weight
+credit_rating = _determine_credit_rating(credit_score)
+
 
 st.title(company_name)
 st.write("")
@@ -33,18 +50,25 @@ color_mapping = {
     "Ba": "#f6b26b", "B": "#e69138", "Caa": "#e06666", "Ca": "#cc0000", 
     "C": "#990000",
 }
-color = "#052D3A" #color_mapping.get("Aaa")
+color = color_mapping.get(credit_rating)
 
 col_1, col_2 = st.columns(2)
 with col_1:
     st.write(rating_description)
 
 with col_2.container(border=True, height=150):
+   
     sub_col_1, sub_col_2 = st.columns(2)
     sub_col_1.markdown("###### Credit Rating")
-    sub_col_1.markdown(f'<h1 style="color:{color}">{credit_rating}</h1>', unsafe_allow_html=True)
+    sub_col_1.markdown(f'<h1 style="color:{"#052D3A"}">{credit_rating}</h1>', unsafe_allow_html=True)
     sub_col_2.markdown("###### Credit Score")
-    sub_col_2.markdown(f'<h1 style="color:{color}">{credit_score:.2f}</h1>', unsafe_allow_html=True)
+    sub_col_2.markdown(f'<h1 style="color:{"#052D3A"}">{credit_score:.2f}</h1>', unsafe_allow_html=True)
+    st.markdown(
+        f"""
+        <div style="background-color: {color}; height: {8}px;"></div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 st.write("---")
 
@@ -73,7 +97,7 @@ with tab_1:
         with cols[i]:
             st.markdown(f"<h4><b>{category.replace('_', ' ').title()}</b></h4>", unsafe_allow_html=True)
             for metric_, value in metrics.items():
-                st.metric(metric_.replace('_', ' ').title(), value)
+                st.metric(metric_.replace('_', ' ').title(), round(value, 2))
 
     st.write("*The presented values below represent the expected (mean) \
         metric values across time for given a timeseries.")
@@ -148,8 +172,21 @@ with tab_2:
     metrics['leverage_coverage_metrics']['class_weight'] = factor_weights["Leverage & Coverage"]
     metrics['profitability_metrics']['class_weight'] = factor_weights["Profitability"]
     metrics['efficiency_metrics']['class_weight'] = factor_weights["Efficiency"]
-    policy_weight = factor_weights['Financial Policy']
+    policy_weight += factor_weights['Financial Policy']
     
+    if factor_weights['Financial Policy'] > 0.0:
+            st.markdown(
+        """
+        **Financial Policy**
+
+        Management and board tolerance for financial risk is a rating determinant \
+        because it directly affects debt levels, credit quality, and the risk of \
+        adverse changes in financing and capital structure. Considerations include \
+        a company’s public commitments in this area, its track record for adhering
+        to commitments, and our views on the ability for the company to achieve its targets. 
+        """
+            )
+
 
 with tab_3:
     st.subheader("Probabilistic Model")
@@ -228,6 +265,7 @@ with tab_3:
         run_pro_model = st.button("Run Model")
     
 
+
 with tab_4:
     st.subheader("Overview")
     st.write("""
@@ -246,6 +284,7 @@ with tab_4:
 
     with tab_1:
         class_scores = output_dict["calculator_output"]["scores"]
+        class_scores.update({"financial_policy": policy_weight})
    
         def assign_credit_rating(value):
             credit_ratings = [
@@ -296,5 +335,6 @@ with tab_4:
         - **Profitability** ({metrics["profitability_metrics"]["class_weight"]:.2%}): Measures like profit margins and return on assets
         - **Leverage & Coverage** ({metrics["leverage_coverage_metrics"]["class_weight"]:.2%}): Debt and interest coverage ratios
         - **Efficiency** ({metrics["efficiency_metrics"]["class_weight"]:.2%}): Operational and asset use efficiency
+        - **Financial Policy** ({policy_weight:.2%}): Measures efficient use of credit.
         
         """)
