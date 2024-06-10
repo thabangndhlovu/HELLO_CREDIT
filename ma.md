@@ -13,6 +13,7 @@ The model considers three main categories of financial metrics:
 - **Leverage & Coverage Metrics:** Ratios in this category, such as Debt to Equity, Debt to EBITDA, EBITDA to Interest Expense, and Debt to Tangible Assets, evaluate the company's debt levels and its ability to cover its financial obligations.
 - **Efficiency Metrics:** This category comprises ratios like Asset Turnover, Inventory to Cost of Sales, and Cash to Assets, which measure how effectively the company utilises its assets/resources to generate revenue.
 
+
 ## Metric Weight
 Each financial category and metric is assigned a specific weight that reflects its relative importance in the overall credit assessment. The weights are determined based on the significance of each metric and ratio in evaluating the company's financial health and creditworthiness. The weights are derived from JSE All Share Index constituents by industry classification, which serves as company classification. 
 
@@ -35,28 +36,32 @@ Table 1: (metric industry percentiles)
 
 Table 2 (aligning percentile with credit rating and score) 
 
-| Metric         | 10th Percentile | 25th Percentile | 50th Percentile (Median) | 75th Percentile | 90th Percentile |
+| Metric         | 10th Percentile | 25th Percentile | 50th Percentile (Median)  | 75th Percentile | 90th Percentile |
 |----------------|-----------------|-----------------|---------------------------|-----------------|-----------------|
-| Credit Score | 1.5             | 2.5             | 4.5                       | 6.5             | 8.5             |
-| Credit Rating   | Aaa             | Aa              | A                         | Baa             | Ba, B, Caa, C   |
+| Credit Score   | 1.5 - 2.5       | 3.5 - 4.5       | 5.5 - 6.5                 | 7.5 - 8.5       | > 8.5           |
+| Credit Rating  | Aaa, Aa         | A, Baa           |  Ba, B                  | Caa, Ca,         |   C             |
 
-The specific metrics, their corresponding weights, and the category weights used in the model model are as follows:
+**The table shows a rough estimated alignment of the credit rating and the metric percentiles*
+
+The specific metrics, their corresponding weights, and the category weights used in the model are as follows:
 
 | Category                 | Category Weight | Metric                      | Metric Weight |
 |--------------------------|-----------------|----------------------------|---------------|
-| Profitability Metrics    | 25              | EBITDA Margin              | 0.4           |
-|                          |                 | Total Assets               | 0.3           |
-|                          |                 | Sales Growth               | 0.3           |
-| Leverage & Coverage Metrics | 20           | Debt to Equity             | 0.2           |
-|                          |                 | Debt to EBITDA             | 0.2           |
-|                          |                 | EBITDA to Interest Expense | 0.2           |
-|                          |                 | Debt to Tangible Assets    | 0.4           |
-| Efficiency Metrics       | 15              | Asset Turnover             | 0.4           |
-|                          |                 | Inventory to Cost of Sales | 0.3           |
-|                          |                 | Cash to Assets             | 0.3           |
+| Profitability Metrics    | 35%              | EBITDA Margin              | 40%           |
+|                          |                 | Total Assets               | 30%           |
+|                          |                 | Sales Growth               | 30%           |
+| Leverage & Coverage Metrics | 40%           | Debt to Equity             | 20%           |
+|                          |                 | Debt to EBITDA             | 20%           |
+|                          |                 | EBITDA to Interest Expense | 20%           |
+|                          |                 | Debt to Tangible Assets    | 40%           |
+| Efficiency Metrics       | 25%              | Asset Turnover             | 40%           |
+|                          |                 | Inventory to Cost of Sales | 30%           |
+|                          |                 | Cash to Assets             | 30%           |
 
-*Model training changes the weight on the table above*
-**Credit Score & Ratings**
+
+
+## Credit Score & Ratings
+
 For each metric within a category, the model assigns a score based on the metric's value and its corresponding quantile position as per the industry. The model credit score ranges from 1.5 (highest rating) to 8.5 (lowest rating) in increments of 1.0. 
 
 For example, if the Debt/Equity falls between the 10th and 15th percentiles, it might be assigned a score of 1.5 based on the predefined quantiles. The model then maps the calculated credit score of the metric to a corresponding credit rating ranging from "Aaa" (highest rating) to "C" (lowest rating), as shown in the following table:
@@ -91,24 +96,25 @@ where:
 
 The final credit rating is determined by mapping the overall credit score to the corresponding rating in the table above.
 
-**Model Training**
+
+## Model Training
 The model undergoes a training process to optimise the category and metric weights used in the calculation. The training process aims to minimise the difference between the predicted credit rating and the actual credit rating from Moody's, Fitch, and S&P (if available). The training process involves the following steps:
 
 1. Category and metric weights are initialised using industry norms.
-2. Using gradient descent, class and metric weights are iteratively adjusted to minimise the loss function, which quantifies the difference between the predicted credit rating and the credit rating from rating agencies. The loss function used is the Mean Absolute Percentage Error (MAPE), calculated as:
+2. Using gradient descent, category and metric weights are iteratively adjusted to minimise the loss function, which quantifies the difference between the predicted credit rating and the credit rating from rating agencies. The loss function used is the Mean Absolute Percentage Error (MAPE), calculated as:
 
    $MAPE = \frac{1}{n} \sum_{i=1}^{n} \left| \frac{Actual_i - Predicted_i}{Actual_i} \right| \times 100$
 
    where:
    - $n$ is the total number of companies in the training dataset
    - $Actual_i$ is the actual credit rating from rating agencies for the $i$-th company
-   - $Predicted_i$ is the predicted credit rating by the model model for the $i$-th company
+   - $Predicted_i$ is the predicted credit rating by the model for the $i$-th company
 
 3. The process repeats for a specified number of iterations or until convergence.
 
-Through this training process, the model learns to assign appropriate class and metric weights, generating credit scores that closely approximate the actual credit ratings from rating agencies.
+Through this training process, the model learns to assign appropriate category and metric weights, generating credit scores that closely approximate the actual credit ratings from rating agencies.
 
-**Conclusion**
+## Conclusion
 The Credit Rating Calculator provides a systematic approach to assess the creditworthiness of companies based on their financial metrics. By considering various ratios across three main categories - Profitability, Leverage & Coverage, and Efficiency - and applying a weighted scoring system, the model generates credit scores and ratings that align with industry standards and market data.
 
-The training process, which utilises gradient descent to minimise the difference between predicted and actual credit ratings, ensures that the model's outputs are reliable and closely approximate the assessments provided by established rating agencies such as Moody's, Fitch, and S&P.
+The training process, which utilises gradient descent to minimise the difference between predicted and actual credit ratings, ensures that the model's outputs closely approximate the assessments provided by established rating agencies such as Moody's, Fitch, and S&P.
