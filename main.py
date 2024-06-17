@@ -49,7 +49,7 @@ def main():
         "Ba": "#f6b26b", "B": "#e69138", "Caa": "#e06666", "Ca": "#cc0000", 
         "C": "#990000",
     }
-    color = color_mapping.get("Caa")
+    color = color_mapping.get(credit_rating)
 
     col_1, col_2 = st.columns(2)
     with col_1:
@@ -74,10 +74,10 @@ def main():
     company_sector = st.selectbox("Select the sector of the company", [
         "Corporates", "Financial Institutions", "Funds & Asset Management", 
         "Infrastructure & Project Finance", "Insurance", "Other"
-    ], disabled=True)
+    ])
 
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: left;} </style>', unsafe_allow_html=True)
-    company_size = st.radio("Company Size", ["Small", "Medium", "Large"], disabled=True)
+    company_size = st.radio("Company Size", ["Small", "Medium", "Large"])
 
 
 

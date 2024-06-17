@@ -57,3 +57,71 @@ BANANA Capital Ltd. has maintained a positive credit history with no significant
 BANANA Capital Ltd. is a financially stable and well-managed company with a solid track record in the investment and financial services industry. The company’s prudent financial practices and diverse investment portfolio position it well for continued growth and stable returns. The current credit rating of A (Stable) reflects confidence in the company’s ability to meet its financial obligations and sustain its operational success.
 
 """)
+
+import pandas as pd
+import streamlit as st
+
+
+
+import pandas as pd
+import streamlit as st
+
+data_df = pd.DataFrame(
+    {
+        "widgets": ["st.selectbox", "st.number_input", "st.text_area", "st.button"],
+    }
+)
+
+data = st.data_editor(
+    data_df,
+    column_config={
+        "widgets": st.column_config.TextColumn(
+            "Widgets",
+            help="Streamlit **widget** commands 🎈",
+            default="st.",
+            max_chars=50,
+            validate="^st\.[a-z_]+$",
+        )
+    },
+    hide_index=True,
+)
+
+import streamlit as st
+import pandas as pd
+import random
+
+
+# Create a sample DataFrame with financial ratios
+data_df = pd.DataFrame({
+    "Ratio": ["Current Ratio", "Quick Ratio", "Debt-to-Equity Ratio", "Return on Equity"],
+    "Value": [0.0, 0.0, 0.0, 0.0]
+})
+
+# Function to generate random values for the ratios
+def generate_random_values():
+    data_df["Value"] = [random.uniform(0.5, 2.0) for _ in range(len(data_df))]
+
+st.title("Financial Ratios App")
+
+# Display the data editor
+edited_df = st.data_editor(
+    data_df,
+    column_config={
+        "Value": st.column_config.NumberColumn(
+            "Value",
+            help="Enter the value for the financial ratio",
+            format="{:.2f}",
+            min_value=0.0,
+            step=0.01,
+        )
+    },
+    hide_index=True,
+)
+
+# Button to generate random values
+if st.button("Generate Random Values"):
+    generate_random_values()
+
+# Display the updated DataFrame
+st.write("Updated Financial Ratios:")
+st.dataframe(edited_df)
