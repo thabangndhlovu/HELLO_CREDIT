@@ -7,6 +7,9 @@ import plotly.graph_objects as go
 
 from hellocredit import CreditRatingCalculator
 
+st.set_page_config(layout="centered", initial_sidebar_state="collapsed")
+
+
 def _determine_credit_rating(score):
     credit_ratings = [
         ("Aaa", 2.5), ("Aa", 3.5), ("A", 4.5), ("Baa", 5.5),
@@ -24,8 +27,6 @@ with open("output.json", "r") as f:
 st.markdown("#### CreditWatch.")
 
 
-
-
 def main():
         
     ###########################################################################
@@ -34,7 +35,7 @@ def main():
     policy_weight = 0.0
     company_name = output_dict["company_name"]
     rating_description = output_dict["rating_description"]
-    credit_score = output_dict["calculator_output"]["credit_score"] 
+    credit_score = output_dict["calculator_output"]["credit_score"] - 5.4
 
     if policy_weight > 0.01:
         credit_score *= policy_weight
@@ -55,8 +56,7 @@ def main():
     with col_1:
         st.write(rating_description)
 
-    with col_2.container(border=True, height=150):
-    
+    with col_2.container(border=True, height=150):        
         sub_col_1, sub_col_2 = st.columns(2)
         sub_col_1.markdown("###### Credit Rating")
         sub_col_1.markdown(f'<h1 style="color:{"#052D3A"}">{credit_rating}</h1>', unsafe_allow_html=True)
@@ -83,8 +83,8 @@ def main():
 
     ################################### TABS ##################################
 
-    tab_1, tab_2, tab_3, tab_4 = st.tabs([
-        "Financial Metrics", "Factor Weights", "Probabilistic Model", "Overview"
+    tab_1, tab_2, tab_3, tab_4, tab_5 = st.tabs([
+        "Financial Metrics", "Credit Risk", "Factor Weights", "Probabilistic Model", "Overview"
     ])
 
     with tab_1:
@@ -94,7 +94,7 @@ def main():
         
         for i, (category, metrics) in enumerate(company_expected_metrics.items()):
             with cols[i]:
-                st.markdown(f"<h4><b>{category.replace('_', ' ').title()}</b></h4>", unsafe_allow_html=True)
+                st.markdown(f"<h4><b>{category.replace('_', ' ').replace('metrics', '').title()}</b></h4>", unsafe_allow_html=True)
                 for metric_, value in metrics.items():
                     st.metric(metric_.replace('_', ' ').title(), round(value, 2))
 
@@ -128,6 +128,63 @@ def main():
 
 
     with tab_2:
+
+        st.subheader("Credit Risk")
+
+        st.title("Credit Risk Metrics Calculator")
+
+        # Input fields for borrower data
+        st.header("Input Borrower Data")
+        borrower_name = st.text_input("Borrower Name")
+        pd_value = st.number_input("Probability of Default (PD)", min_value=0.0, max_value=1.0, step=0.01)
+        lgd_value = st.number_input("Loss Given Default (LGD)", min_value=0.0, max_value=1.0, step=0.01)
+        ead_value = st.number_input("Exposure at Default (EAD)", min_value=0.0, step=1000.0)
+
+        # Calculate Expected Loss
+        if st.button("Calculate"):
+            if pd_value and lgd_value and ead_value:
+                expected_loss = pd_value * lgd_value * ead_value
+                st.success(f"Expected Loss for {borrower_name}: ${expected_loss:,.2f}")
+            else:
+                st.error("Please enter valid PD, LGD, and EAD values.")
+
+
+        ratings = ['Aaa', 'Aa', 'A', 'Baa', 'Ba', 'B', 'Caa', 'Ca', 'C']
+        color_mapping = {
+            "Aaa": "#6aa84f", "Aa": "#93c47d", "A": "#b6d7a8",
+            "Baa": "#ffd966", "Ba": "#f6b26b", "B": "#e69138",
+            "Caa": "#e06666", "Ca": "#cc0000", "C": "#990000",
+        }
+
+        # Create color steps based on the color mapping
+        color_steps = [{'range': [i, i+1], 'color': color} for i, color in enumerate(color_mapping.values())]
+
+        fig = go.Figure(go.Indicator(
+            mode="gauge",
+            value=credit_score - 1.5,
+            title={'text': "Rating Scale", 'font': {'size': 20}},
+            domain={'x': [0, 1], 'y': [0, 1]},
+            gauge={
+                'axis': {'range': [0, 9], 'tickvals': list(range(9)), 'ticktext': ratings},
+                'steps': color_steps,
+                'threshold': {
+                    'line': {'color': "black", 'width': 6},
+                    'thickness': 1,
+                    'value': credit_score - 1.5
+                },
+                'bar': {
+                    'thickness': 1, 
+                    'color': "rgba(0,0,0,0.3)", # Set the gauge line to black with 30% opacity
+                },  
+            }
+        ))
+
+        st.plotly_chart(fig, use_container_width=False)
+
+
+
+
+    with tab_3:
         metrics = output_dict["metrics"]
         st.subheader("Factor Weights")
         st.write("""
@@ -191,7 +248,7 @@ def main():
                 )
 
 
-    with tab_3:
+    with tab_4:
         st.subheader("Probabilistic Model")
         st.write("""
         The Probabilistic Model enables you to predict various financial metrics and 
@@ -211,7 +268,7 @@ def main():
         bayesian_ratings = [bayesian_output[x]["credit_rating"] for x in bayesian_output]
         periods_ratings = [periods_output[x]["credit_rating"] for x in periods_output]
 
-        time_periods = ['Q1', 'Q2', 'Q3', 'Q4']
+        time_periods = ['T1', 'T2', 'T3', 'T4']
         periods_ratings.extend(bayesian_ratings)
         time_periods.extend([f"Prediction {i+1}" for i in range(len(bayesian_ratings))])
 
@@ -269,7 +326,7 @@ def main():
         
 
 
-    with tab_4:
+    with tab_5:
         st.subheader("Overview")
         st.write("""
         """)
