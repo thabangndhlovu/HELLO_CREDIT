@@ -1,10 +1,24 @@
+<<<<<<< HEAD
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
+=======
+import os
+import pandas as pd
+import streamlit as st
+
+def save_uploaded_file(uploaded_file):
+    os.makedirs("temp", exist_ok=True)
+    file_path = os.path.join("temp", uploaded_file.name)
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    return file_path
+>>>>>>> ba23da94d8bfcfd5aae80919534249ee04e336a8
 
 st.set_page_config(layout="centered", initial_sidebar_state="collapsed")
 
+<<<<<<< HEAD
 
 st.title("Credit Risk Analysis Dashboard")
 
@@ -16,9 +30,22 @@ st.title("Credit Risk Analysis Dashboard")
 # metric1.metric("Rating", "A")
 # metric2.metric("Score", "3.5")
 # metric3.metric("Expected Loss", "0.10%")
+=======
+st.set_page_config(page_title="CreditWatch", page_icon="💳")
+st.title("CreditWatch")
+>>>>>>> ba23da94d8bfcfd5aae80919534249ee04e336a8
 
+uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
 
+if uploaded_file:
+   with st.spinner("Loading and processing file..."):
+      file_path = save_uploaded_file(uploaded_file)
+      df = pd.read_excel(file_path)
+   
+   st.success("File successfully loaded!")
+   st.session_state['excel_file_path'] = file_path
 
+<<<<<<< HEAD
 import plotly.graph_objects as go
 
 def create_rating_gauge(score):
@@ -63,3 +90,10 @@ def create_rating_gauge(score):
 # score = 2.3  # This could be a variable or user input
 # fig = create_rating_gauge(score)
 # st.plotly_chart(fig, use_container_width=False)
+=======
+   st.subheader("Preview of the uploaded Excel file:")
+   st.dataframe(df.head())
+
+   if st.button("Load Model"):
+      st.page_link("main.py", label="Home", icon="🏠")
+>>>>>>> ba23da94d8bfcfd5aae80919534249ee04e336a8
