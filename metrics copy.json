@@ -1,6 +1,6 @@
 {
   "profitability_metrics": {
-    "class_weight": 25,
+    "class_weight": 20,
     "metric_weights": {
       "ebitda_margin": 0.4,
       "total_assets": 0.3,
@@ -10,17 +10,19 @@
       "ebitda_margin": {
         "lower_is_better": false,
         "thresholds": [
-          [40.0, Infinity],
-          [35.0, 40.0],
-          [30.0, 35.0],
-          [25.0, 30.0],
+          [25.0, Infinity],
           [20.0, 25.0],
           [15.0, 20.0],
           [10.0, 15.0],
-          [5.0, 10.0],
-          [-Infinity, 5.0]
+          [7.5, 10.0],
+          [5.0, 7.5],
+          [2.5, 5.0],
+          [0.0, 2.5],
+          [-5.0, 0.0],
+          [-Infinity, -5.0]
         ]
       },
+
       "total_assets": {
         "lower_is_better": false,
         "thresholds": [
@@ -52,12 +54,12 @@
     }
   },
   "leverage_coverage_metrics": {
-    "class_weight": 20,
+    "class_weight": 25,
     "metric_weights": {
-      "debt_to_equity": 0.2,
-      "debt_to_ebitda": 0.2,
+      "debt_to_equity": 0.3,
+      "debt_to_ebitda": 0.3,
       "ebitda_to_interest_expense": 0.2,
-      "debt_to_tangible_assets": 0.4
+      "debt_to_tangible_assets": 0.2
     },
     "metrics": {
       "debt_to_equity": {
@@ -105,15 +107,15 @@
       "debt_to_tangible_assets": {
         "lower_is_better": true,
         "thresholds": [
-          [-Infinity, 0.2],
-          [0.2, 0.4],
-          [0.4, 0.6],
-          [0.6, 0.8],
-          [0.8, 1.0],
-          [1.0, 1.2],
-          [1.2, 1.5],
+          [-Infinity, 0.5],
+          [0.5, 1.0],
+          [1.0, 1.5],
           [1.5, 2.0],
-          [2.0, Infinity]
+          [2.0, 2.5],
+          [2.5, 3.0],
+          [3.0, 3.5],
+          [3.5, 4.0],
+          [4.0, Infinity]
         ]
       }
     }
@@ -143,29 +145,29 @@
       "inventory_to_cost_of_sales": {
         "lower_is_better": true,
         "thresholds": [
-          [-Infinity, 0.1],
-          [0.1, 0.2],
-          [0.2, 0.3],
-          [0.3, 0.4],
-          [0.4, 0.5],
-          [0.5, 0.6],
-          [0.6, 0.8],
-          [0.8, 1.0],
-          [1.0, Infinity]
+          [-Infinity, 4.0],
+          [4.0, 6.0],
+          [6.0, 8.0],
+          [8.0, 10.0],
+          [10.0, 12.0],
+          [12.0, 15.0],
+          [15.0, 20.0],
+          [20.0, 25.0],
+          [25.0, Infinity]
         ]
       },
       "cash_to_assets": {
         "lower_is_better": false,
         "thresholds": [
-          [0.5, Infinity],
-          [0.4, 0.5],
-          [0.3, 0.4],
-          [0.25, 0.3],
-          [0.2, 0.25],
-          [0.15, 0.2],
-          [0.1, 0.15],
-          [0.05, 0.1],
-          [-Infinity, 0.05]
+          [0.20, Infinity],
+          [0.15, 0.20],
+          [0.12, 0.15],
+          [0.10, 0.12],
+          [0.08, 0.10],
+          [0.06, 0.08],
+          [0.04, 0.06],
+          [0.02, 0.04],
+          [-Infinity, 0.02]
         ]
       }
     }

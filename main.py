@@ -20,7 +20,7 @@ def _determine_credit_rating(score):
         if score <= threshold:
             return rating
 
-with open("output.json", "r") as f:
+with open("outputt.json", "r") as f:
     output_dict = json.load(f)
 
 
@@ -35,7 +35,7 @@ def main():
     policy_weight = 0.0
     company_name = output_dict["company_name"]
     rating_description = output_dict["rating_description"]
-    credit_score = output_dict["calculator_output"]["credit_score"] - 5.4
+    credit_score = output_dict["calculator_output"]["credit_score"] #- 5.4
 
     if policy_weight > 0.01:
         credit_score *= policy_weight
@@ -56,7 +56,7 @@ def main():
     with col_1:
         st.write(rating_description)
 
-    with col_2.container(border=True, height=150):        
+    with col_2.container(border=True, height=150):
         sub_col_1, sub_col_2 = st.columns(2)
         sub_col_1.markdown("###### Credit Rating")
         sub_col_1.markdown(f'<h1 style="color:{"#052D3A"}">{credit_rating}</h1>', unsafe_allow_html=True)
@@ -74,10 +74,10 @@ def main():
     company_sector = st.selectbox("Select the sector of the company", [
         "Corporates", "Financial Institutions", "Funds & Asset Management", 
         "Infrastructure & Project Finance", "Insurance", "Other"
-    ])
+    ], disabled=True)
 
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: left;} </style>', unsafe_allow_html=True)
-    company_size = st.radio("Company Size", ["Small", "Medium", "Large"])
+    company_size = st.radio("Company Size", ["Small", "Medium", "Large"], index=0, disabled=True)
 
 
 
@@ -127,61 +127,9 @@ def main():
         rerun_model = st.button("Re-Run Model")
 
 
-    with tab_2:
-
-        st.subheader("Credit Risk")
-
-        st.title("Credit Risk Metrics Calculator")
-
-        # Input fields for borrower data
-        st.header("Input Borrower Data")
-        borrower_name = st.text_input("Borrower Name")
-        pd_value = st.number_input("Probability of Default (PD)", min_value=0.0, max_value=1.0, step=0.01)
-        lgd_value = st.number_input("Loss Given Default (LGD)", min_value=0.0, max_value=1.0, step=0.01)
-        ead_value = st.number_input("Exposure at Default (EAD)", min_value=0.0, step=1000.0)
-
-        # Calculate Expected Loss
-        if st.button("Calculate"):
-            if pd_value and lgd_value and ead_value:
-                expected_loss = pd_value * lgd_value * ead_value
-                st.success(f"Expected Loss for {borrower_name}: ${expected_loss:,.2f}")
-            else:
-                st.error("Please enter valid PD, LGD, and EAD values.")
-
-
-        ratings = ['Aaa', 'Aa', 'A', 'Baa', 'Ba', 'B', 'Caa', 'Ca', 'C']
-        color_mapping = {
-            "Aaa": "#6aa84f", "Aa": "#93c47d", "A": "#b6d7a8",
-            "Baa": "#ffd966", "Ba": "#f6b26b", "B": "#e69138",
-            "Caa": "#e06666", "Ca": "#cc0000", "C": "#990000",
-        }
-
-        # Create color steps based on the color mapping
-        color_steps = [{'range': [i, i+1], 'color': color} for i, color in enumerate(color_mapping.values())]
-
-        fig = go.Figure(go.Indicator(
-            mode="gauge",
-            value=credit_score - 1.5,
-            title={'text': "Rating Scale", 'font': {'size': 20}},
-            domain={'x': [0, 1], 'y': [0, 1]},
-            gauge={
-                'axis': {'range': [0, 9], 'tickvals': list(range(9)), 'ticktext': ratings},
-                'steps': color_steps,
-                'threshold': {
-                    'line': {'color': "black", 'width': 6},
-                    'thickness': 1,
-                    'value': credit_score - 1.5
-                },
-                'bar': {
-                    'thickness': 1, 
-                    'color': "rgba(0,0,0,0.3)", # Set the gauge line to black with 30% opacity
-                },  
-            }
-        ))
-
-        st.plotly_chart(fig, use_container_width=False)
-
-
+    # with tab_2:
+    #     pass
+       
 
 
     with tab_3:
@@ -209,14 +157,20 @@ def main():
         
         with col_1:
             for metric, default_weight in metrics_data:
-                factor_weights[metric] = st.slider(
-                    metric, 0, 100, value=int(default_weight), key=metric, 
-                    disabled=(metric != "Financial Policy")
-                )
+                if metric == "Financial Policy":
+                    factor_weights[metric] = st.slider(
+                        metric, -100, 100, value=int(default_weight), key=metric)
+                else:
+                    factor_weights[metric] = st.slider(
+                        metric, 0, 100, value=int(default_weight), key=metric, 
+                        disabled=True
+                    )
 
+        total_weight = sum(factor_weights.values())
+        factor_weights_weighted = {metric: abs(weight) / abs(total_weight) for metric, weight in factor_weights.items()}
 
         with col_2:
-            fig = px.pie(values=list(factor_weights.values()), names=list(factor_weights.keys()))
+            fig = px.pie(values=list(factor_weights_weighted.values()), names=list(factor_weights.keys()))
             fig.update_layout(
                 title="Factor Weight Distribution",
                 legend_title="Factors",
@@ -234,7 +188,7 @@ def main():
         metrics["efficiency_metrics"]["class_weight"] = factor_weights["Efficiency"]
         policy_weight += factor_weights["Financial Policy"]
         
-        if factor_weights['Financial Policy'] > 0.0:
+        if abs(factor_weights['Financial Policy']) > 0.0:
                 st.markdown(
             """
             **Financial Policy**
@@ -268,7 +222,7 @@ def main():
         bayesian_ratings = [bayesian_output[x]["credit_rating"] for x in bayesian_output]
         periods_ratings = [periods_output[x]["credit_rating"] for x in periods_output]
 
-        time_periods = ['T1', 'T2', 'T3', 'T4']
+        time_periods = [f"T{t + 1}" for t in range(len(periods_output))]
         periods_ratings.extend(bayesian_ratings)
         time_periods.extend([f"Prediction {i+1}" for i in range(len(bayesian_ratings))])
 
@@ -395,7 +349,7 @@ def main():
             - **Profitability** ({metrics["profitability_metrics"]["class_weight"]:.2%}): Measures like profit margins and return on assets
             - **Leverage & Coverage** ({metrics["leverage_coverage_metrics"]["class_weight"]:.2%}): Debt and interest coverage ratios
             - **Efficiency** ({metrics["efficiency_metrics"]["class_weight"]:.2%}): Operational and asset use efficiency
-            - **Financial Policy** ({policy_weight:.2%}): Measures efficient use of credit.
+            - **ESG (Environmental, Social, and Governance)** ({policy_weight:.2%}): Assesses sustainability practices and ethical standards
             
             """)
 

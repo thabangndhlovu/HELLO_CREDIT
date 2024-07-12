@@ -6,7 +6,7 @@ st.page_link("main.py", label="Back")
 st.title("Credit Rating Descriptions")
 
 data = {
-    "Score Range": ["≤ 1.5", "≤ 2.5", "≤ 3.5", "≤ 4.5", "≤ 5.5", "≤ 6.5", "≤ 7.5", "≤ 8.5", "> 8.5"],
+    "Score Range": ["≤ 2.5", "≤ 3.5", "≤ 4.5", "≤ 5.5", "≤ 6.5", "≤ 7.5", "≤ 8.5", "≤ 9.5", "> 9.5"],
     "Rating": ["Aaa", "Aa", "A", "Baa", "Ba", "B", "Caa", "Ca", "C"],
     "Description": [
         "Issuers assessed Aaa are judged to have the highest intrinsic, or standalone, financial strength, and thus subject to the lowest level of credit risk absent any possibility of extraordinary support from an affiliate or a government.",
@@ -19,7 +19,7 @@ data = {
         "Issuers assessed Ca have highly speculative intrinsic, or standalone, financial strength, and are likely to be either in, or very near, default, with some prospect for recovery of principal and interest; or, these issuers have avoided default or are expected to avoid default through the provision of extraordinary support from an affiliate or a government.",
         "Issuers assessed C are typically in default, with little prospect for recovery of principal or interest; or, these issuers are benefiting from a government or affiliate support but are likely to be liquidated over time; without support there would be little prospect for recovery of principal or interest."
     ],
-    "Expected Loss": ["0.00%", "0.01%", "0.10%", "0.46%", "2.31%", "7.62%", "17.86%", "50.00%", "100.00%"]
+    "Probability of Default": ["0.00%", "0.01%", "0.10%", "0.46%", "2.31%", "7.62%", "17.86%", "50.00%", "100.00%"]
 }
 
 color_mapping = {
