@@ -3,6 +3,7 @@ import pandas as pd
 
 st.set_page_config(layout="centered", initial_sidebar_state="collapsed")
 st.page_link("main.py", label="Back")
+st.markdown("#### CreditWatch.")
 st.title("Credit Rating Descriptions")
 
 data = {

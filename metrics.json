@@ -1,6 +1,6 @@
 {
   "profitability_metrics": {
-    "class_weight": 25,
+    "class_weight": 20,
     "metric_weights": {
       "ebitda_margin": 0.4,
       "total_assets": 0.3,
@@ -52,12 +52,12 @@
     }
   },
   "leverage_coverage_metrics": {
-    "class_weight": 20,
+    "class_weight": 25,
     "metric_weights": {
       "debt_to_equity": 0.2,
-      "debt_to_ebitda": 0.2,
+      "debt_to_ebitda": 0.4,
       "ebitda_to_interest_expense": 0.2,
-      "debt_to_tangible_assets": 0.4
+      "debt_to_tangible_assets": 0.2
     },
     "metrics": {
       "debt_to_equity": {
@@ -121,9 +121,9 @@
   "efficiency_metrics": {
     "class_weight": 15,
     "metric_weights": {
-      "asset_turnover": 0.4,
+      "asset_turnover": 0.5,
       "inventory_to_cost_of_sales": 0.3,
-      "cash_to_assets": 0.3
+      "cash_to_assets": 0.2
     },
     "metrics": {
       "asset_turnover": {
