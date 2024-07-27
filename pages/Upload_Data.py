@@ -1,4 +1,7 @@
 import os
+import json
+import hashlib
+from datetime import datetime
 
 import pandas as pd
 import streamlit as st
@@ -6,9 +9,28 @@ import pandera as pa
 
 
 
-def save_uploaded_file(uploaded_file):
-    os.makedirs("temp", exist_ok=True)
-    file_path = os.path.join("temp", uploaded_file.name)
+def get_work_directory(filepath):
+    filename = os.path.splitext(os.path.basename(filepath))[0]
+    timestamp = datetime.now().strftime("%Y%m%d")
+    
+    with open(filepath, 'rb') as f:
+        file_content = f.read()
+        
+    hash_value = hashlib.sha256(file_content).hexdigest()[:16]
+    return os.path.abspath(f"temp/{hash_value}_{timestamp}")
+
+
+def load_config(company_sector, company_size):
+    sector = company_sector.lower()
+    file_path = "metrics.json" if sector == "large" else "metrics.json"
+    
+    with open(file_path, "r") as f:
+        return json.load(f)
+    
+
+def save_uploaded_file(folder, uploaded_file):
+    os.makedirs(folder, exist_ok=True)
+    file_path = os.path.join(folder, uploaded_file.name)
     with open(file_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
     return file_path
@@ -47,10 +69,11 @@ uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
 
 if uploaded_file:
     with st.spinner("Loading and processing file..."):
-        file_path = save_uploaded_file(uploaded_file)
+        work_directory = get_work_directory(uploaded_file.name)
+        excel_file_path = save_uploaded_file(work_directory, uploaded_file)
         
         try:
-            df = pd.read_excel(file_path, index_col=[0, 1])
+            df = pd.read_excel(excel_file_path, index_col=[0, 1])
             df.columns = pd.to_datetime(df.columns)
 
             # Validate the dataset
@@ -110,10 +133,30 @@ if uploaded_file:
                     st.error("Please enter the company name")
                     st.stop()
                 
-                st.session_state["excel_file_path"] = file_path
-                st.session_state["company_name"] = company_name.upper()
-                st.session_state["company_size"] = company_size    
-                st.session_state["company_sector"] = company_sector
+                st.session_state["work_directory"] = work_directory
+                
+                input_dict = {
+                    "work_directory": work_directory,
+                    "file_path": excel_file_path,
+                    "company_meta": {
+                        "company_name": company_name,
+                        "company_size": company_size,
+                        "company_sector": company_sector,
+                    },
+                    "probabilistic_model": {
+                        "periods": 1, 
+                        "look_back_periods": 5, 
+                        "max_iter": 300, 
+                        "tol": 1e-3
+                    },
+                    "configuration": load_config(company_sector, company_size)
+                }
+
+
+
+
+
+
                 
                 st.switch_page("pages/credit_watch.py")
                 
@@ -139,6 +182,10 @@ if uploaded_file:
 
 if not uploaded_file:
     with st.expander("Metric Descriptions"):
+        st.caption("""
+        The model expects an Excel template with the following metrics. 
+        Ensure the data is adjusted based on the company's size for accurate analysis by the model:
+        """)
             
         metrics_info = {
             "Ebitda Margin": "Measures operational profitability as a percentage of revenue. EBITDA / Revenue",
@@ -153,7 +200,7 @@ if not uploaded_file:
             "Cash To Assets": "Ratio of cash and cash equivalents to total assets, indicating liquidity. Cash and Cash Equivalents / Total Assets"
             }
 
-        df = pd.DataFrame.from_dict(metrics_info, orient='index').reset_index()
+        df = pd.DataFrame.from_dict(metrics_info, orient="index").reset_index()
         df.columns = ['Metric', 'Description']
         st.table(df)
 

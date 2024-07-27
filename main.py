@@ -1,9 +1,16 @@
 import streamlit as st
 
 
-st.set_page_config(page_title="Welcome Page", layout="centered", initial_sidebar_state="collapsed")
-st.title("CreditWatch. - Credit Intelligence")
-st.text("")
+st.set_page_config(
+    page_title="Welcome Page", 
+    layout="centered", 
+    initial_sidebar_state="collapsed"
+)
+
+st.markdown("""
+# CreditWatch. - Credit Intelligence
+#
+""")
 
 if st.button("Get Started", key="upload_data_button", help="Upload your data and start credit-watching!", type="primary", use_container_width=True):
     st.switch_page("pages/Upload_Data.py")

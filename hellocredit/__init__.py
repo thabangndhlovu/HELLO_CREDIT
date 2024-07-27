@@ -1,1 +1,2 @@
-from .hellocredit import CreditRatingCalculator
+from .hellocredit import *
+from .models import *

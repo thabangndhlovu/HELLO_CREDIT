@@ -10,6 +10,8 @@ from hellocredit import CreditRatingCalculator
 st.set_page_config(layout="centered", initial_sidebar_state="collapsed")
 
 
+
+
 def _determine_credit_rating(score):
     credit_ratings = [
         ("Aaa", 2.5), ("Aa", 3.5), ("A", 4.5), ("Baa", 5.5),
@@ -20,32 +22,34 @@ def _determine_credit_rating(score):
         if score <= threshold:
             return rating
 
-with open("outputt.json", "r") as f:
-    output_dict = json.load(f)
 
-def get_bot_response(user_input):
-    # This is a simple response mechanism. In a real application,
-    # you might want to use a more sophisticated NLP model or API.
-    responses = {
-        "hello": "Hi there! How can I help you today?",
-        "how are you": "I'm doing well, thank you for asking!",
-        "bye": "Goodbye! Have a great day!",
-    }
-    return responses.get(user_input.lower(), "I'm not sure how to respond to that. Can you please rephrase?")
+try:
+    WORK_DIR = st.session_state["work_directory"]
+    
+    with open(f"{WORK_DIR}/output_dict.json", "r") as f:
+        output_dict = json.load(f)
 
-st.markdown("#### CreditWatch.")
+    with open(f"{WORK_DIR}/input_dict.json", "r") as f:
+        input_dict = json.load(f)
 
+except:
+    st.switch_page("main.py")
+
+
+
+st.markdown('#### <a href="../main.py" target="_self" style="text-decoration: none; color: inherit;">CreditWatch.</a>', unsafe_allow_html=True)
 
 def main():
+
         
     ###########################################################################
-    company_name = st.session_state["company_name"]
-    selected_company_size = st.session_state["company_size"]
-    selected_company_sector = st.session_state["company_sector"]
+    company_name = input_dict["company_meta"]["company_name"].upper()
+    selected_company_size = input_dict["company_meta"]["company_size"]
+    selected_company_sector = input_dict["company_meta"]["company_sector"]
     
     policy_weight = 0.0
-    rating_description = output_dict["rating_description"]
-    credit_score = output_dict["calculator_output"]["credit_score"] + 1.4
+    rating_description = output_dict["rating_meta"]["description"]
+    credit_score = output_dict["calculator_output"]["credit_score"] - 1.4
 
     if policy_weight > 0.01:
         credit_score *= policy_weight
@@ -101,14 +105,17 @@ def main():
         disabled=True
     )
 
-    #company_size = st.radio("Company Size", ["Small", "Medium", "Large"], disabled=True)
 
     ################################### TABS ##################################
+    # rerun_model = st.button("Re-Run Model", type="primary", use_container_width=True)
+    # generate_report = st.button("Generate Report", use_container_width=True)
 
     tab_1, tab_2, tab_3, tab_4, tab_5 = st.tabs([
-        "Financial Metrics", "Chabot", "Factor Weights", "Probabilistic Model", "Overview"
+        "Financial Metrics", "Credit Assessment", "Factor Weights", 
+        "Probabilistic Model", "Rating Factors"
     ])
 
+    
     with tab_1:
         st.subheader("Financial Metrics")
         company_expected_metrics = output_dict["company_expected_metrics"]
@@ -124,38 +131,15 @@ def main():
             metric values across time for given the timeseries.")
 
 
-        rerun_model = st.button("Re-Run Model", type="primary", use_container_width=True)
-
 
     with tab_2:
-        st.header("Chatbot")
+        st.header("Credit Assessment")
         
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
 
-        chat_container = st.container()
-        input_container = st.container()
-
-        with input_container:
-            prompt = st.chat_input("What is your message?")
-
-        if prompt:
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            response = get_bot_response(prompt)
-            st.session_state.messages.append({"role": "assistant", "content": response})
-
-        with chat_container:
-            for message in st.session_state.messages:
-                with st.chat_message(message["role"]):
-                    st.markdown(message["content"])
-
-        st.markdown('<script>window.scrollTo(0,document.body.scrollHeight);</script>', unsafe_allow_html=True)
-            
-       
 
 
     with tab_3:
-        metrics = output_dict["metrics"]
+        metrics = input_dict["configuration"]
         st.subheader("Factor Weights")
         st.write("""
         The Factor Weights tab enables customisation of the CreditWatch. by adjusting 
@@ -237,7 +221,7 @@ def main():
         }
 
         periods_output = output_dict["calculator_periods_output"]
-        bayesian_output = output_dict["bayesian_model_output"]
+        bayesian_output = output_dict["bayesian_model_output"]['computed_rating']
 
         bayesian_ratings = [bayesian_output[x]["credit_rating"] for x in bayesian_output]
         periods_ratings = [periods_output[x]["credit_rating"] for x in periods_output]
@@ -248,6 +232,8 @@ def main():
 
         actual_values = [rating_dict[rating] for rating in periods_ratings]
         prediction_start_index = time_periods.index('Prediction 1')
+
+    
 
         fig = go.Figure(data=[
             go.Scatter(
@@ -288,18 +274,32 @@ def main():
 
         st.plotly_chart(fig)
 
-        with st.expander("Model Configuration"):
-            periods = st.number_input("Number of Periods: ", 1)
-            col_1, col_2 = st.columns(2)
-            with col_1:
-                n_iter = st.number_input("Number of Iterations: ", 300)
-            with col_2:
-                tol = st.number_input("Tolerance for Convergence: ", 1e-3, format="%e")
+    
+
+    with st.expander("Model Configuration"):
+        prob_model = input_dict["probabilistic_model"]
+        col1, col2 = st.columns(2)
         
+        prob_inputs = [
+            ("Number of Periods:", "periods", {}),
+            ("Number of Look back Periods:", "look_back_periods", {}),
+            ("Number of Iterations:", "max_iter", {}),
+            ("Tolerance for Convergence:", "tol", {"format": "%e"})
+        ]
+        
+        for i, (label, key, kwargs) in enumerate(prob_inputs):
+            with col1 if i % 2 == 0 else col2:
+                input_dict["probabilistic_model"][key] = st.number_input(
+                    label, 
+                    value=prob_model[key], 
+                    key=key, 
+                    **kwargs
+                )
 
 
+    
     with tab_5:
-        st.subheader("Overview")
+        st.subheader("Rating Factors")
         st.write("""
         """)
 
@@ -367,7 +367,7 @@ def main():
             - **Profitability** ({metrics["profitability_metrics"]["class_weight"]:.2%}): Measures like profit margins and return on assets
             - **Leverage & Coverage** ({metrics["leverage_coverage_metrics"]["class_weight"]:.2%}): Debt and interest coverage ratios
             - **Efficiency** ({metrics["efficiency_metrics"]["class_weight"]:.2%}): Operational and asset use efficiency
-            - **ESG (Environmental, Social, and Governance)** ({policy_weight:.2%}): Assesses sustainability practices and ethical standards
+            - **Financial Policy** ({policy_weight:.2%}): Assesses sustainability practices and ethical standards
             
             """)
 
