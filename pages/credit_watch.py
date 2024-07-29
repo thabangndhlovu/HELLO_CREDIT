@@ -5,66 +5,55 @@ import streamlit as st
 import plotly.express as px
 import plotly.graph_objects as go
 
-from hellocredit import CreditRatingCalculator
+from hellocredit import HelloCredit
+from hellocredit.helpers import MAPPED_RATINGS_DICT, COLOR_MAPPING, COMPANY_SECTOR_OPTIONS, COMPANY_SIZE_OPTIONS
+from hellocredit.utils import get_credit_rating, percentage_to_rating
 
 st.set_page_config(layout="centered", initial_sidebar_state="collapsed")
 
 
 
 
-def _determine_credit_rating(score):
-    credit_ratings = [
-        ("Aaa", 2.5), ("Aa", 3.5), ("A", 4.5), ("Baa", 5.5),
-        ("Ba", 6.5), ("B", 7.5), ("Caa", 8.5), ("Ca", 9.5),
-        ("C", float("inf")),
-    ]
-    for rating, threshold in credit_ratings:
-        if score <= threshold:
-            return rating
-
-
-try:
-    WORK_DIR = st.session_state["work_directory"]
-    
-    with open(f"{WORK_DIR}/output_dict.json", "r") as f:
-        output_dict = json.load(f)
-
-    with open(f"{WORK_DIR}/input_dict.json", "r") as f:
-        input_dict = json.load(f)
-
-except:
-    st.switch_page("main.py")
-
-
 
 st.markdown('#### <a href="../main.py" target="_self" style="text-decoration: none; color: inherit;">CreditWatch.</a>', unsafe_allow_html=True)
 
 def main():
+    try:
+        WORK_DIR = st.session_state.input_dict["work_directory"]
 
+        with open(f"{WORK_DIR}/output_dict.json", "r") as f:
+            output_dict = json.load(f)
+
+        with open(f"{WORK_DIR}/input_dict.json", "r") as f:
+            input_dict = json.load(f)
+
+    except:
+        st.switch_page("main.py")
         
     ###########################################################################
+
+    financial_policy_rating, financial_policy_score = percentage_to_rating(input_dict["financial_policy"])
+
+    total_weight = sum(list(map(abs, [
+        input_dict['financial_policy'],
+        input_dict["configuration"]['profitability_metrics']['class_weight'],
+        input_dict["configuration"]['leverage_coverage_metrics']['class_weight'],
+        input_dict["configuration"]['efficiency_metrics']['class_weight']
+    ])))
+
+
+    financial_policy_percentage = input_dict['financial_policy'] / total_weight
+    financial_policy_contribution = financial_policy_score * financial_policy_percentage
+    financial_policy_percentage_weighted = -1 * financial_policy_contribution 
+
     company_name = input_dict["company_meta"]["company_name"].upper()
     selected_company_size = input_dict["company_meta"]["company_size"]
     selected_company_sector = input_dict["company_meta"]["company_sector"]
-    
-    policy_weight = 0.0
     rating_description = output_dict["rating_meta"]["description"]
-    credit_score = output_dict["calculator_output"]["credit_score"] - 1.4
-
-    if policy_weight > 0.01:
-        credit_score *= policy_weight
-    credit_rating = _determine_credit_rating(credit_score)
-
-
+    credit_score = output_dict["calculator_output"]["credit_score"] + financial_policy_percentage_weighted
+    credit_rating = get_credit_rating(credit_score)
+    
     st.title(company_name)
-    st.write("")
-
-    color_mapping = {
-        "Aaa": "#6aa84f", "Aa": "#93c47d", "A": "#b6d7a8", "Baa": "#ffd966",
-        "Ba": "#f6b26b", "B": "#e69138", "Caa": "#e06666", "Ca": "#cc0000", 
-        "C": "#990000",
-    }
-    color = color_mapping.get(credit_rating)
 
     col_1, col_2 = st.columns(2)
     with col_1:
@@ -76,46 +65,30 @@ def main():
         sub_col_1.markdown(f'<h1 style="color:{"#052D3A"}">{credit_rating}</h1>', unsafe_allow_html=True)
         sub_col_2.markdown("###### Credit Score")
         sub_col_2.markdown(f'<h1 style="color:{"#052D3A"}">{credit_score:.2f}</h1>', unsafe_allow_html=True)
-        st.markdown(
-            f"""
-            <div style="background-color: {color}; height: {8}px;"></div>
-            """,
-            unsafe_allow_html=True,
-        )
+        st.markdown(f"""<div style="background-color: {COLOR_MAPPING.get(credit_rating)}; height: {8}px;"></div>""", unsafe_allow_html=True)
 
     st.write("---")
-    sector_options = [
-        "Corporates", "Financial Institutions", "Funds & Asset Management", 
-        "Infrastructure & Project Finance", "Insurance", "Other"
-    ]
-    
     company_sector = st.selectbox(
         "Select the sector of the company", 
-        sector_options,
-        index=sector_options.index(selected_company_sector),
+        COMPANY_SECTOR_OPTIONS,
+        index=COMPANY_SECTOR_OPTIONS.index(selected_company_sector),
         disabled=True)
 
-
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: left;} </style>', unsafe_allow_html=True)
-    size_options = ["Small", "Medium", "Large"]
     company_size = st.radio(
         "Company Size", 
-        size_options, 
-        index=size_options.index(selected_company_size), 
+        COMPANY_SIZE_OPTIONS, 
+        index=COMPANY_SIZE_OPTIONS.index(selected_company_size), 
         disabled=True
     )
 
-
     ################################### TABS ##################################
-    # rerun_model = st.button("Re-Run Model", type="primary", use_container_width=True)
-    # generate_report = st.button("Generate Report", use_container_width=True)
 
     tab_1, tab_2, tab_3, tab_4, tab_5 = st.tabs([
         "Financial Metrics", "Credit Assessment", "Factor Weights", 
         "Probabilistic Model", "Rating Factors"
     ])
 
-    
     with tab_1:
         st.subheader("Financial Metrics")
         company_expected_metrics = output_dict["company_expected_metrics"]
@@ -131,11 +104,13 @@ def main():
             metric values across time for given the timeseries.")
 
 
+        rerun_model = st.button("Re-Run Model", type="primary", use_container_width=True)
+
+
 
     with tab_2:
         st.header("Credit Assessment")
         
-
 
 
     with tab_3:
@@ -147,7 +122,7 @@ def main():
         to four metric categories: Profitability, Leverage & Coverage, Efficiency, 
         and Financial Policy. Tailoring these weights allows alignment with your 
         specific risk assessment criteria and industry focus, emphasising the most 
-        relevant metrics for your needs.
+        relevant metrics for your analysis.
         """)
 
         col_1, col_2 = st.columns(2)
@@ -156,27 +131,25 @@ def main():
             ("Profitability", metrics['profitability_metrics']['class_weight']),
             ("Leverage & Coverage", metrics['leverage_coverage_metrics']['class_weight']),
             ("Efficiency", metrics['efficiency_metrics']['class_weight']),
-            ("Financial Policy", 0)
+            ("Financial Policy", input_dict["financial_policy"])
         ]
 
         factor_weights = {}
         
         with col_1:
             for metric, default_weight in metrics_data:
-                if metric == "Financial Policy":
-                    factor_weights[metric] = st.slider(
-                        metric, -100, 100, value=int(default_weight), key=metric)
-                else:
-                    factor_weights[metric] = st.slider(
-                        metric, 0, 100, value=int(default_weight), key=metric, 
-                        disabled=True
-                    )
-
-        total_weight = sum(factor_weights.values())
-        factor_weights_weighted = {metric: abs(weight) / abs(total_weight) for metric, weight in factor_weights.items()}
+                is_financial_policy = metric == "Financial Policy"
+                factor_weights[metric] = st.slider(
+                    metric,
+                    min_value=-100 if is_financial_policy else 0,
+                    max_value=100,
+                    value=int(default_weight),
+                    key=metric,
+                    disabled=not is_financial_policy
+            )
 
         with col_2:
-            fig = px.pie(values=list(factor_weights_weighted.values()), names=list(factor_weights.keys()))
+            fig = px.pie(values=list(map(abs, factor_weights.values())), names=list(factor_weights.keys()))
             fig.update_layout(
                 title="Factor Weight Distribution",
                 legend_title="Factors",
@@ -186,26 +159,25 @@ def main():
             )
             st.plotly_chart(fig)
 
-        total_weight = sum(factor_weights.values())
-        factor_weights = {metric: weight / total_weight for metric, weight in factor_weights.items()}
-
-        metrics["leverage_coverage_metrics"]["class_weight"] = factor_weights["Leverage & Coverage"]
-        metrics["profitability_metrics"]["class_weight"] = factor_weights["Profitability"]
-        metrics["efficiency_metrics"]["class_weight"] = factor_weights["Efficiency"]
-        policy_weight += factor_weights["Financial Policy"]
+        input_dict["configuration"]["leverage_coverage_metrics"]["class_weight"] = factor_weights["Leverage & Coverage"]
+        input_dict["configuration"]["profitability_metrics"]["class_weight"] = factor_weights["Profitability"]
+        input_dict["configuration"]["efficiency_metrics"]["class_weight"] = factor_weights["Efficiency"]
+        input_dict["financial_policy"] = factor_weights["Financial Policy"]
         
         if abs(factor_weights['Financial Policy']) > 0.0:
                 st.markdown(
             """
             **Financial Policy**
 
-            Management and board tolerance for financial risk is a rating determinant \
-            because it directly affects debt levels, credit quality, and the risk of \
-            adverse changes in financing and capital structure. Considerations include \
-            a company’s public commitments in this area, its track record for adhering
-            to commitments, and our views on the ability for the company to achieve its targets. 
+            This factor assesses the management and board's tolerance for financial risk, \
+            which directly impacts debt levels, credit quality, and the potential \
+            for adverse changes in financing and capital structure. The evaluation \
+            takes into account the company's public commitments regarding financial \
+            policy, its history of adhering to these commitments, and the analyst's \
+            perspective on the company's capability to achieve its stated targets.
             """
-                )
+            )
+
 
 
     with tab_4:
@@ -214,11 +186,6 @@ def main():
         The Probabilistic Model enables you to predict various financial metrics and 
         credit ratings using Bayesian analysis.
         """)
-
-        rating_dict = {
-            "Aaa": 2.5, "Aa": 3.5, "A": 4.5, "Baa": 5.5, "Ba": 6.5, 
-            "B": 7.5, "Caa": 8.5, "Ca": 9.5, "C": float("inf")
-        }
 
         periods_output = output_dict["calculator_periods_output"]
         bayesian_output = output_dict["bayesian_model_output"]['computed_rating']
@@ -230,10 +197,9 @@ def main():
         periods_ratings.extend(bayesian_ratings)
         time_periods.extend([f"Prediction {i+1}" for i in range(len(bayesian_ratings))])
 
-        actual_values = [rating_dict[rating] for rating in periods_ratings]
+        actual_values = [MAPPED_RATINGS_DICT[rating] for rating in periods_ratings]
         prediction_start_index = time_periods.index('Prediction 1')
 
-    
 
         fig = go.Figure(data=[
             go.Scatter(
@@ -268,66 +234,48 @@ def main():
         )
         fig.update_yaxes(
             autorange="reversed", 
-            tickvals=list(rating_dict.values()), 
-            ticktext=list(rating_dict.keys())
+            tickvals=list(MAPPED_RATINGS_DICT.values()), 
+            ticktext=list(MAPPED_RATINGS_DICT.keys())
         )
 
         st.plotly_chart(fig)
 
     
 
-    with st.expander("Model Configuration"):
-        prob_model = input_dict["probabilistic_model"]
-        col1, col2 = st.columns(2)
-        
-        prob_inputs = [
-            ("Number of Periods:", "periods", {}),
-            ("Number of Look back Periods:", "look_back_periods", {}),
-            ("Number of Iterations:", "max_iter", {}),
-            ("Tolerance for Convergence:", "tol", {"format": "%e"})
-        ]
-        
-        for i, (label, key, kwargs) in enumerate(prob_inputs):
-            with col1 if i % 2 == 0 else col2:
-                input_dict["probabilistic_model"][key] = st.number_input(
-                    label, 
-                    value=prob_model[key], 
-                    key=key, 
-                    **kwargs
-                )
-
+        with st.expander("Model Configuration"):
+            prob_model = input_dict["probabilistic_model"]
+            col1, col2 = st.columns(2)
+            
+            prob_inputs = [
+                ("Number of Periods:", "periods", {"min_value": 1, "max_value": 10}),
+                ("Number of Look back Periods:", "look_back_periods", {"min_value": 1, "max_value": 100}),
+                ("Number of Iterations:", "max_iter", {}),
+                ("Tolerance for Convergence:", "tol", {"format": "%e"})
+            ]
+            
+            for i, (label, key, kwargs) in enumerate(prob_inputs):
+                with col1 if i % 2 == 0 else col2:
+                    input_dict["probabilistic_model"][key] = st.number_input(
+                        label, 
+                        value=prob_model[key], 
+                        key=key, 
+                        **kwargs
+                    )
 
     
     with tab_5:
         st.subheader("Rating Factors")
-        st.write("""
-        """)
-
         tab_1, tab_2 = st.tabs(["Feature Contribution", "Summary Table"])
-        
-        with tab_2:
-            summary_table = output_dict["calculator_output"]["metrics"]
-
-            summary_table_df = pd.DataFrame.from_dict(summary_table, orient='index')
-            summary_table_df.columns = [col.replace('_', ' ').title() for col in summary_table_df.columns]
-            summary_table_df.index = summary_table_df.index.map(lambda x: x.replace('_', ' ').title())
-            summary_table_df['Category'] = summary_table_df['Category'].apply(lambda x: x.replace('_', ' ').title().replace('Metrics', '').strip())
-            st.dataframe(summary_table_df)
 
         with tab_1:
             class_scores = output_dict["calculator_output"]["scores"]
-            class_scores.update({"financial_policy": policy_weight})
-    
-            def assign_credit_rating(value):
-                credit_ratings = [
-                    ("Aaa", 2.5), ("Aa", 3.5), ("A", 4.5), ("Baa", 5.5), ("Ba", 6.5), 
-                    ("B", 7.5), ("Caa", 8.5), ("Ca", 9.5), ("C", float("inf"))
-                ]
-                return next(rating for rating, threshold in credit_ratings if value <= threshold)
+            
+            if abs(factor_weights['Financial Policy']) > 0.0:
+                class_scores.update({"financial_policy": financial_policy_score})
 
             # Extracting data and assigning ratings
             categories, values = list(class_scores.keys()), list(class_scores.values())
-            ratings = [assign_credit_rating(v) for v in values]
+            ratings = [get_credit_rating(v) for v in values]
 
             total_value = sum(values)
             normalized_values = [(v / total_value) * 100 for v in values]
@@ -354,21 +302,51 @@ def main():
                 yaxis=dict(title=''),
                 legend_title_text='Features',
                 margin=dict(l=20, r=20, t=40, b=20),
-                width=1000, 
+                width=700, 
                 height=200 
             )
 
             st.plotly_chart(fig)
+
+            total_weight = sum(map(abs, factor_weights.values()))
+            normalised_weights = {metric: (abs(weight) / total_weight) for metric, weight in factor_weights.items()}
             
             st.markdown(f"""
-            This chart displays the key factors that determine the overall credit\
-            rating and their relative importance. The rating is based on three main criteria:
+            This chart displays the key factors that determine the overall credit rating and their relative importance. The rating is based on four main criteria:
 
-            - **Profitability** ({metrics["profitability_metrics"]["class_weight"]:.2%}): Measures like profit margins and return on assets
-            - **Leverage & Coverage** ({metrics["leverage_coverage_metrics"]["class_weight"]:.2%}): Debt and interest coverage ratios
-            - **Efficiency** ({metrics["efficiency_metrics"]["class_weight"]:.2%}): Operational and asset use efficiency
-            - **Financial Policy** ({policy_weight:.2%}): Assesses sustainability practices and ethical standards
-            
+            - **Profitability** ({normalised_weights["Profitability"]:.2%}): Measures like profit margins and return on assets
+            - **Leverage & Coverage** ({normalised_weights["Leverage & Coverage"]:.2%}): Debt and interest coverage ratios
+            - **Efficiency** ({normalised_weights["Efficiency"]:.2%}): Operational and asset use efficiency
+            - **Financial Policy** ({normalised_weights["Financial Policy"]:.2%}): Assesses sustainability practices and ethical standards
             """)
+        
+        with tab_2:
+            clean_string =  lambda s: s.replace('_', ' ').title().replace('Metrics', '').strip()
 
+            summary_table_df = pd.DataFrame.from_dict(output_dict["calculator_output"]["metrics"], orient='index')        
+            summary_table_df.columns = summary_table_df.columns.map(clean_string)
+            summary_table_df.index = summary_table_df.index.map(clean_string)        
+            summary_table_df['Category'] = summary_table_df['Category'].apply(clean_string)
+            
+            if abs(factor_weights['Financial Policy']) > 0.0:
+                fin_policy_sum = pd.DataFrame({
+                    "Category": ["Financial Policy"],
+                    "Value": [factor_weights['Financial Policy']],
+                    "Score": [""],
+                    "Weight": [financial_policy_percentage],
+                    "Weighted Score": [financial_policy_percentage_weighted],
+                    "Rating": [financial_policy_rating]
+                }, index=["Financial Policy"])
+                
+                summary_table_df = pd.concat([summary_table_df, fin_policy_sum])
+            
+            st.dataframe(summary_table_df.round(2))
+            st.caption("*The presented values above represent the expected (average) "
+                    "metric values across time for the given timeseries.")
+
+
+    if rerun_model:
+        model = HelloCredit(input_dict)
+        model.run_function()
+        st.rerun()
 main()
