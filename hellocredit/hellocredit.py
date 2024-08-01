@@ -8,8 +8,9 @@ import pandas as pd
 
 from hellocredit.utils import get_rating_meta
 from hellocredit.helpers import MAPPED_RATINGS
+from hellocredit.llm_model import get_llm_response
 
-
+API_KEY = "sk-proj-Tzd95Nr8di5wXfkkfU7GT3BlbkFJZNuNrBwbi8pepTWpSsCu"
 
 @dataclass
 class HelloCredit:
@@ -53,6 +54,14 @@ class HelloCredit:
             for period, metrics in enumerate(model_output_transform)
         }
         
+        llm_response = get_llm_response(
+            self.work_dir, 
+            {
+            "DATA1":self.company_period_metrics, 
+            "DATA2": self.company_expected_metrics
+            }
+        )
+
         bayesian_model_output = {
             "model_output": model_output,
             "model_output_transform": model_output_transform,
@@ -66,12 +75,14 @@ class HelloCredit:
             "calculator_output": calculator_output,
             "calculator_periods_output": calculator_periods_output,
             "bayesian_model_output": bayesian_model_output,
+            "llm_response": llm_response
         }
         
         files_to_dump = {
             "output_dict.json": self.output_dict,
             "input_dict.json": self.input_dict
         }
+
 
         for filename, data in files_to_dump.items():
             file_path = os.path.join(self.work_dir, filename)
@@ -81,9 +92,6 @@ class HelloCredit:
         return self.output_dict
 
    
-
-
-
 
 
 
@@ -203,10 +211,8 @@ def bayesian_ridge_transform(data):
 
 def bayesian_ridge_model(metrics, periods=1, look_back_periods=5, max_iter=300, tol=1e-3):
     import numpy as np
-    from sklearn.linear_model import BayesianRidge
-    
+    from sklearn.linear_model import BayesianRidge    
     predictions = {}
-    periods, look_back_periods, max_iter = abs(periods), abs(look_back_periods), abs(max_iter)
     
     for metric_group, values_dict in metrics.items():
         predictions[metric_group] = {}

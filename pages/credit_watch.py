@@ -1,4 +1,5 @@
 import json
+import time
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -6,18 +7,15 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 from hellocredit import HelloCredit
-from hellocredit.helpers import MAPPED_RATINGS_DICT, COLOR_MAPPING, COMPANY_SECTOR_OPTIONS, COMPANY_SIZE_OPTIONS
-from hellocredit.utils import get_credit_rating, percentage_to_rating
+from hellocredit.helpers import MAPPED_RATINGS, MAPPED_RATINGS_DICT, COLOR_MAPPING, COMPANY_SECTOR_OPTIONS, COMPANY_SIZE_OPTIONS
+from hellocredit.utils import get_credit_rating, percentage_to_rating, get_rating_meta
 
-st.set_page_config(layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(layout="centered", page_title="Credit Watch.", initial_sidebar_state="collapsed")
+st.markdown('#### <a href="../Welcome_Page.py" target="_self" style="text-decoration: none; color: inherit;">CreditWatch.</a>', unsafe_allow_html=True)
 
-
-
-
-
-st.markdown('#### <a href="../main.py" target="_self" style="text-decoration: none; color: inherit;">CreditWatch.</a>', unsafe_allow_html=True)
 
 def main():
+            
     try:
         WORK_DIR = st.session_state.input_dict["work_directory"]
 
@@ -26,10 +24,20 @@ def main():
 
         with open(f"{WORK_DIR}/input_dict.json", "r") as f:
             input_dict = json.load(f)
-
     except:
         st.switch_page("main.py")
-        
+
+    if st.session_state.run_progress_bar:
+        progress_text = "Operation in progress. Please wait."
+        my_bar = st.progress(0, text=progress_text)
+
+        for percent_complete in range(100):
+            time.sleep(0.01)
+            my_bar.progress(percent_complete + 1, text=progress_text)
+        time.sleep(1)
+        my_bar.empty()
+
+
     ###########################################################################
 
     financial_policy_rating, financial_policy_score = percentage_to_rating(input_dict["financial_policy"])
@@ -49,15 +57,17 @@ def main():
     company_name = input_dict["company_meta"]["company_name"].upper()
     selected_company_size = input_dict["company_meta"]["company_size"]
     selected_company_sector = input_dict["company_meta"]["company_sector"]
-    rating_description = output_dict["rating_meta"]["description"]
     credit_score = output_dict["calculator_output"]["credit_score"] + financial_policy_percentage_weighted
     credit_rating = get_credit_rating(credit_score)
+    rating_meta = get_rating_meta("Rating", credit_rating)
+    probability_of_default = rating_meta["probability_of_default"]
     
     st.title(company_name)
+    st.markdown("##")
 
     col_1, col_2 = st.columns(2)
     with col_1:
-        st.write(rating_description)
+        st.write(rating_meta["description"])
 
     with col_2.container(border=True, height=150):
         sub_col_1, sub_col_2 = st.columns(2)
@@ -96,21 +106,97 @@ def main():
         
         for i, (category, metrics) in enumerate(company_expected_metrics.items()):
             with cols[i]:
-                st.markdown(f"<h4><b>{category.replace('_', ' ').replace('metrics', '').title()}</b></h4>", unsafe_allow_html=True)
-                for metric_, value in metrics.items():
-                    st.metric(metric_.replace('_', ' ').title(), round(value, 2))
+                st.markdown(f"#### {category.replace('_', ' ').replace('metrics', '').title()}", unsafe_allow_html=True)
+                for metric, value in metrics.items():
+                    st.metric(metric.replace('_', ' ').title(), round(value, 2))
 
         st.caption("*The presented values above represent the expected (average) \
             metric values across time for given the timeseries.")
 
-
-        rerun_model = st.button("Re-Run Model", type="primary", use_container_width=True)
-
-
+        rerun_model = st.button("Run Model", type="primary", use_container_width=True)
 
     with tab_2:
         st.header("Credit Assessment")
-        
+
+        st.markdown(rating_meta['meaning'])
+
+        col_1, col_2 = st.columns([0.8, 0.2])
+
+        scaled_credit_score = max(1.5, min(credit_score, 10.5))
+
+        with col_1:
+            fig = go.Figure()
+            
+            shapes = [
+                go.layout.Shape(
+                    type="rect",
+                    x0=1.5 if i == 0 else MAPPED_RATINGS[i-1][1],
+                    x1=upper_bound if upper_bound != float("inf") else 10.5,
+                    y0=0,
+                    y1=1,
+                    fillcolor=COLOR_MAPPING[r],
+                    line_width=0,
+                    layer="below"
+                )
+                for i, (r, upper_bound) in enumerate(MAPPED_RATINGS)
+            ]
+
+            # Add vertical line for the score
+            shapes.append(
+                go.layout.Shape(
+                    type="line",
+                    x0=scaled_credit_score,
+                    x1=scaled_credit_score,
+                    y0=-2,
+                    y1=2,
+                    line=dict(color="rgba(0,0,0,0.5)", width=5)
+                )
+            )
+
+            # Customize layout
+            fig.update_layout(
+                shapes=shapes,
+                xaxis=dict(
+                    title="Credit Rating",
+                    title_standoff=25,
+                    range=[1.5, 10.5],  # Keep this range to match your shapes
+                    tickvals=[1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5],  # Adjusted to start at 1.5
+                    ticktext=[r[0] for r in MAPPED_RATINGS],
+                    tickangle=0,
+                    tickmode='array',
+                    tickfont=dict(size=10),
+                    title_font=dict(size=10)
+                ),
+                yaxis=dict(visible=False),
+                height=150,
+                margin=dict(l=40, r=20, t=20, b=50),
+                showlegend=False,
+        )
+
+            st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+
+
+        with col_2:
+            st.markdown("#### ")
+            st.metric("Probability of Default", f"{probability_of_default}%")
+
+
+        st.markdown("##### Summary Analysis")
+        st.markdown(output_dict['llm_response']['credit_analysis']['summary'])
+
+        with st.expander("Highlights"):
+            col_1, col_2 = st.columns(2)
+            with col_1:
+                st.markdown("##### Key Strengths")
+                for strength in output_dict['llm_response']['credit_analysis']["key_strengths"]:
+                    st.markdown(f"- {strength}")
+
+            with col_2:
+                st.markdown("##### Potential Risks")
+                for risk in output_dict['llm_response']['credit_analysis']["potential_risks"]:
+                    st.markdown(f"- {risk}")
+
+        st.caption("Generated with AI.")
 
 
     with tab_3:
@@ -149,7 +235,10 @@ def main():
             )
 
         with col_2:
-            fig = px.pie(values=list(map(abs, factor_weights.values())), names=list(factor_weights.keys()))
+            fig = px.pie(
+                values=list(map(abs, factor_weights.values())), 
+                names=list(factor_weights.keys())
+            )
             fig.update_layout(
                 title="Factor Weight Distribution",
                 legend_title="Factors",
@@ -163,9 +252,10 @@ def main():
         input_dict["configuration"]["profitability_metrics"]["class_weight"] = factor_weights["Profitability"]
         input_dict["configuration"]["efficiency_metrics"]["class_weight"] = factor_weights["Efficiency"]
         input_dict["financial_policy"] = factor_weights["Financial Policy"]
+
         
         if abs(factor_weights['Financial Policy']) > 0.0:
-                st.markdown(
+            st.markdown(
             """
             **Financial Policy**
 
@@ -176,8 +266,7 @@ def main():
             policy, its history of adhering to these commitments, and the analyst's \
             perspective on the company's capability to achieve its stated targets.
             """
-            )
-
+        )
 
 
     with tab_4:
@@ -349,4 +438,6 @@ def main():
         model = HelloCredit(input_dict)
         model.run_function()
         st.rerun()
+
+    st.session_state.run_progress_bar = False
 main()

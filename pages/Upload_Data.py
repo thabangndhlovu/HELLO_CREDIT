@@ -2,6 +2,7 @@
 import os
 import json
 import hashlib
+import time
 from datetime import datetime
 from typing import Dict, List, Tuple
 
@@ -12,7 +13,6 @@ import streamlit as st
 from hellocredit import HelloCredit
 from hellocredit.utils import validate_dataframe
 from hellocredit.helpers import COMPANY_SECTOR_OPTIONS, COMPANY_SIZE_OPTIONS
-
 BASE_PATH = r"C:\Users\103763\Projects\HELLO_CREDIT"
 
 
@@ -32,10 +32,9 @@ def get_work_directory(company_name: str, filepath: str) -> str:
         hash_value = hashlib.sha256(f.read()).hexdigest()[:16]
     return os.path.abspath(f"temp/{hash_value}")
 
-
-def load_config(company_sector: str, company_size: str) -> Dict:
-    sector = company_sector.lower()
-    file_path = "metrics.json" if sector == "large" else "metrics.json"
+def load_config(company_sector: str, company_size: str) -> dict:
+    size = company_size.lower()
+    file_path = "metrics_large.json" if size == "large" else "metrics.json"
     with open(file_path, "r") as f:
         return json.load(f)
 
@@ -87,7 +86,11 @@ def get_input_dict(
     }
 
 def main():
-    st.set_page_config(page_title="Upload Data", layout="centered", initial_sidebar_state="collapsed")
+    st.set_page_config(
+        page_title="Upload Data", 
+        layout="centered", 
+        initial_sidebar_state="collapsed"
+    )
     st.markdown("#### CreditWatch.")
     st.title("Upload Company Metrics")
     st.markdown("##")
@@ -130,28 +133,32 @@ def main():
             st.markdown("### Preview of the dataset file:")
             st.dataframe(st.session_state.validated_df)
 
-            if st.button("Load Model", type="primary", use_container_width=True):
-                if not st.session_state.company_name:
-                    st.error("Please enter the company name")
-                    st.stop()
-                
-                input_dict = get_input_dict(
-                    st.session_state.work_directory, 
-                    st.session_state.excel_file_path, 
-                    st.session_state.company_name, 
-                    st.session_state.company_size, 
-                    company_sector
-                )
-            
-                model = HelloCredit(input_dict)
-                st.session_state.output_dict = model.run_function()
-                st.session_state.input_dict = input_dict
-                st.switch_page("pages/credit_watch.py")
-        
-        
         except Exception as error:
             st.error(f"An error occurred while processing the file. \
                 Please make sure you're using the correct file template and try again.\n{error}")
+
+        if st.button("Load Model", type="primary", use_container_width=True):
+
+            if not st.session_state.company_name:
+                st.error("Please enter the company name")
+                st.stop()
+            
+            input_dict = get_input_dict(
+                st.session_state.work_directory,
+                st.session_state.excel_file_path,
+                st.session_state.company_name,
+                st.session_state.company_size,
+                company_sector
+            )
+        
+            model = HelloCredit(input_dict)
+            st.session_state.output_dict = model.run_function()
+            st.session_state.input_dict = input_dict
+            st.session_state.run_progress_bar = True
+            st.session_state.toast = True
+            
+            st.switch_page("pages/Credit_Watch.py")
+
     
     else:
         with st.expander("Metric Descriptions"):

@@ -11,7 +11,6 @@ df = pd.DataFrame(RATING_META)
 styled_df = df.style.applymap(lambda v: f"background-color: {COLOR_MAPPING.get(v, '')}", subset=["Rating"])
 st.write(styled_df.to_html(index=False, escape=False), unsafe_allow_html=True)
 
-
 st.caption("*Rating scale, Descriptions and Expected Loss percentages are \
     extrapolated from Moody's Loss Given Default for Speculative-Grade Companies (2015).")
 
