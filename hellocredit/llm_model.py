@@ -7,90 +7,90 @@ from langchain_core.output_parsers.json import SimpleJsonOutputParser
 
 
 template = """
-You are a sophisticated senior credit analyst specializing in credit risk assessment. 
-Your task is to analyze the financial health and creditworthiness of a company based on provided financial ratios and metrics. 
 
-Use the given data to produce a comprehensive credit analysis report and quote metrics to support your analysis.
-Tone and Style: Formal, objective, and concise
+Role:
+You are an experienced senior credit analyst specializing in credit risk assessment.
+
+Task:
+Analyze the financial health and creditworthiness of a company using the provided financial ratios and metrics. 
+Produce a comprehensive credit analysis report, highlighting a specific theme in your overall analysis, and cite specific metrics to support your findings.
+
+Tone and Style:
+Maintain a formal and objective.
 
 Input Data:
-1. DATA1: A time series of financial ratios and metrics.
-2. DATA2: The mean values of these metrics across the time series.
 
-Instructions:
-1. Analyze the company's financial health using the provided metrics.
-2. Focus on trends over time and compare the latest values to historical averages (if available).
-3. Provide insights on the company's strengths and potential risks.
-4. Be objective and fair in your assessment, avoiding biases.
-5. Structure your analysis into the following sections:
+DATA1: Time series of financial ratios and metrics.
+DATA2: Mean values of these metrics across the time series.
 
-A. Leverage and Coverage:
-   - Analyze: debt-to-equity, debt-to-EBITDA, EBITDA-to-interest expense, and debt-to-tangible assets ratios.
-   - Assess: The company's ability to manage debt and financial risk.
-   - Consider: Trends in these ratios and their implications for future solvency.
+**Instructions**
 
-B. Efficiency:
-   - Analyze: asset turnover, inventory to cost of sales, and cash to assets ratios.
-   - Assess: The company's operational efficiency and working capital management.
-   - Consider: Trends in these ratios and their implications for their operation of the company.
+Leverage and Coverage:
+Analyze the following ratios: debt-to-equity, debt-to-EBITDA, EBITDA-to-interest expense, and debt-to-tangible assets.
+Assess the company’s ability to manage debt and financial risk.
+Focus on trends and their implications for future solvency.
 
-C. Profitability:
-   - Analyze: EBITDA margin.
-   - Assess: The impact on the company's financial health and ability to service debt.
-   - Consider: Trends in profitability and their sustainability.
+Efficiency:
+Analyze the following ratios: asset turnover, inventory-to-cost of sales, and cash-to-assets.
+Assess the company’s operational efficiency and working capital management.
+Evaluate trends and their implications for the company's operations.
 
-D. Overall Analysis:
-   - Synthesize the findings from the previous sections.
-   - Provide an overall assessment of the company's creditworthiness.
-   - Highlight key strengths and potential risks.
+Profitability:
+Analyze the EBITDA margin.
+Assess its impact on the company’s financial health and debt service ability.
+Consider trends and their sustainability.
+Overall Analysis:
 
-Output Format:
-Provide your analysis in a JSON format with the following structure:
+Synthesize findings from the sections above into a cohesive analysis centered around a specific theme (e.g., the company’s resilience, risk exposure, or growth potential).
+Provide a comprehensive assessment of the company’s creditworthiness.
+Highlight key strengths and potential risks.
 
-"credit_analysis": 
-    "summary": "",
-    "key_strengths": "",
-    "potential_risks": ""
+Expected Output Format (JSON):
+"overall_analysis": str,
+"key_strengths": list,
+"potential_risks": list,
+"response": true
 
-Ensure your analysis is:
-1. Data-driven: Base your conclusions on the provided metrics.
-2. Objective: Avoid personal biases and unsupported assumptions.
-3. Comprehensive: Cover all aspects mentioned in the instructions.
-4. Clear and Concise: Provide insights in a straightforward manner.
+Requirements:
+- Data-driven: Base your conclusions on the provided metrics.
+- Objective: Avoid personal biases and unsupported assumptions.
+- Comprehensive: Cover all aspects mentioned in the instructions.
+- Clear and Concise: Present insights in a straightforward manner, with correct paragraph spacing.
 
+Input Data:
 DATA1:
 {DATA1}
 
 DATA2:
 {DATA2}
+
 """
 
-prompt = ChatPromptTemplate.from_template(template)
+def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
+    file = os.path.join(file_path, "llm_analysis.json")
+    
+    if os.path.exists(file):
+        with open(file, "r") as f:
+            return json.load(f)
+    
+    try:
+        prompt = ChatPromptTemplate.from_template(template)
+        model = ChatOpenAI(
+            model="gpt-4o-mini",
+            api_key=api_key,
+            model_kwargs={"response_format": {"type": "json_object"}},
+            #max_tokens=100
+        )
 
-# Initialize the language model
-model = ChatOpenAI(
-    model="gpt-4o-mini",
-    api_key="sk-proj-Tzd95Nr8di5wXfkkfU7GT3BlbkFJZNuNrBwbi8pepTWpSsCu",
-    model_kwargs={"response_format": {"type": "json_object"}},
-    #max_tokens=100
-)
-
-chain = prompt | model | SimpleJsonOutputParser()
-
-
-
-def get_llm_response(file_path, model_inputs):
-    file = os.path.join(file_path, "credit_assessment.json")
-
-    if not os.path.exists(file):
+        chain = prompt | model | SimpleJsonOutputParser()
         response = chain.invoke(model_inputs)
 
         with open(file, "w") as f:
             json.dump(response, f)
         return response
-   
-    with open(file, "r") as f:
-        response = json.load(f)
-
-    return response
-
+    
+    except Exception as e:
+        return {
+            "executive_analysis": f"Error occurred while getting AI response: **{e}**",
+            "response": False
+        }

@@ -115,6 +115,7 @@ def main():
 
         rerun_model = st.button("Run Model", type="primary", use_container_width=True)
 
+
     with tab_2:
         st.header("Credit Assessment")
 
@@ -172,31 +173,32 @@ def main():
                 margin=dict(l=40, r=20, t=20, b=50),
                 showlegend=False,
         )
-
             st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 
         with col_2:
             st.markdown("#### ")
             st.metric("Probability of Default", f"{probability_of_default}%")
+        
+        if output_dict['llm_response'].get('response'):
+            st.markdown("##### Summary Analysis")
+            st.markdown(output_dict['llm_response']['overall_analysis'])
 
+            with st.expander("Highlights"):
+                col_1, col_2 = st.columns(2)
+                with col_1:
+                    st.markdown("##### Key Strengths")
+                    for strength in output_dict['llm_response']["key_strengths"]:
+                        st.markdown(f"- {strength}")
 
-        st.markdown("##### Summary Analysis")
-        st.markdown(output_dict['llm_response']['credit_analysis']['summary'])
+                with col_2:
+                    st.markdown("##### Potential Risks")
+                    for risk in output_dict['llm_response']["potential_risks"]:
+                        st.markdown(f"- {risk}")
 
-        with st.expander("Highlights"):
-            col_1, col_2 = st.columns(2)
-            with col_1:
-                st.markdown("##### Key Strengths")
-                for strength in output_dict['llm_response']['credit_analysis']["key_strengths"]:
-                    st.markdown(f"- {strength}")
-
-            with col_2:
-                st.markdown("##### Potential Risks")
-                for risk in output_dict['llm_response']['credit_analysis']["potential_risks"]:
-                    st.markdown(f"- {risk}")
-
-        st.caption("Generated with AI.")
+            st.caption("Generated with AI.")
+        else:
+            st.error(output_dict['llm_response']['overall_analysis'])
 
 
     with tab_3:
@@ -329,8 +331,6 @@ def main():
 
         st.plotly_chart(fig)
 
-    
-
         with st.expander("Model Configuration"):
             prob_model = input_dict["probabilistic_model"]
             col1, col2 = st.columns(2)
@@ -338,7 +338,7 @@ def main():
             prob_inputs = [
                 ("Number of Periods:", "periods", {"min_value": 1, "max_value": 10}),
                 ("Number of Look back Periods:", "look_back_periods", {"min_value": 1, "max_value": 100}),
-                ("Number of Iterations:", "max_iter", {}),
+                ("Number of Iterations:", "max_iter", {"min_value": 0, "max_value": 1000}),
                 ("Tolerance for Convergence:", "tol", {"format": "%e"})
             ]
             
@@ -406,7 +406,7 @@ def main():
             - **Profitability** ({normalised_weights["Profitability"]:.2%}): Measures like profit margins and return on assets
             - **Leverage & Coverage** ({normalised_weights["Leverage & Coverage"]:.2%}): Debt and interest coverage ratios
             - **Efficiency** ({normalised_weights["Efficiency"]:.2%}): Operational and asset use efficiency
-            - **Financial Policy** ({normalised_weights["Financial Policy"]:.2%}): Assesses sustainability practices and ethical standards
+            - **Financial Policy** ({normalised_weights["Financial Policy"]:.2%}): Evaluates management's risk tolerance and impact on debt, credit quality, and capital structure
             """)
         
         with tab_2:
@@ -433,9 +433,9 @@ def main():
             st.caption("*The presented values above represent the expected (average) "
                     "metric values across time for the given timeseries.")
 
-
     if rerun_model:
-        model = HelloCredit(input_dict)
+        API_KEY = ""
+        model = HelloCredit(API_KEY, input_dict)
         model.run_function()
         st.rerun()
 

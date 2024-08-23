@@ -1,0 +1,98 @@
+{
+  "profitability_metrics": {
+    "class_weight": 20,
+    "metric_weights": {
+      "ebitda_margin": 1.0
+    },
+    "metrics": {
+      "ebitda_margin": {
+        "lower_is_better": false,
+        "thresholds": [
+          [0.30, Infinity],
+          [0.25, 0.30],
+          [0.20, 0.25],
+          [0.15, 0.20],
+          [0.10, 0.15],
+          [0.05, 0.10],
+          [0.0, 0.05],
+          [-0.10, 0.0],
+          [-Infinity, -0.10]
+        ]
+      }
+    }
+  },
+  "leverage_coverage_metrics": {
+    "class_weight": 25,
+    "metric_weights": {
+      "debt_to_equity": 0.3,
+      "debt_to_ebitda": 0.4,
+      "ebitda_to_interest_expense": 0.3
+    },
+    "metrics": {
+      "debt_to_equity": {
+        "lower_is_better": true,
+        "thresholds": [
+          [-Infinity, 0.05],
+          [0.05, 0.10],
+          [0.10, 0.25],
+          [0.25, 0.50],
+          [0.50, 0.75],
+          [0.75, 1.0],
+          [1.0, 1.5],
+          [1.5, 2.0],
+          [2.0, Infinity]
+        ]
+      },
+      "debt_to_ebitda": {
+        "lower_is_better": true,
+        "thresholds": [
+          [-Infinity, 0.5],
+          [0.5, 1.0],
+          [1.0, 2.0],
+          [2.0, 3.0],
+          [3.0, 4.5],
+          [4.5, 6.5],
+          [6.5, 9.0],
+          [6.5, 9.0],
+          [9.0, Infinity]
+        ]
+      },
+      "ebitda_to_interest_expense": {
+        "lower_is_better": false,
+        "thresholds": [
+          [0.5, Infinity],
+          [0.3, 0.5],
+          [0.15, 0.3],
+          [0.1, 0.15],
+          [0.06, 0.1],
+          [0.03, 0.06],
+          [0.01, 0.03],
+          [0.0, 0.01],
+          [-Infinity, 0.0]
+        ]
+      }
+    }
+  },
+  "efficiency_metrics": {
+    "class_weight": 15,
+    "metric_weights": {
+      "asset_turnover": 1.0
+    },
+    "metrics": {
+      "asset_turnover": {
+        "lower_is_better": false,
+        "thresholds": [
+          [5.0, Infinity],
+          [4.0, 5.0],
+          [3.0, 4.0],
+          [2.5, 3.0],
+          [2.0, 2.5],
+          [1.5, 2.0],
+          [1.0, 1.5],
+          [0.5, 1.0],
+          [-Infinity, 0.5]
+        ]
+      }
+    }
+  }
+}

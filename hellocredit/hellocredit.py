@@ -10,10 +10,10 @@ from hellocredit.utils import get_rating_meta
 from hellocredit.helpers import MAPPED_RATINGS
 from hellocredit.llm_model import get_llm_response
 
-API_KEY = "sk-proj-Tzd95Nr8di5wXfkkfU7GT3BlbkFJZNuNrBwbi8pepTWpSsCu"
 
 @dataclass
 class HelloCredit:
+    api_key: str
     input_dict: dict = field(default_factory=dict)
     
     def __post_init__(self):
@@ -56,10 +56,8 @@ class HelloCredit:
         
         llm_response = get_llm_response(
             self.work_dir, 
-            {
-            "DATA1":self.company_period_metrics, 
-            "DATA2": self.company_expected_metrics
-            }
+            self.api_key, 
+            {"DATA1": self.company_period_metrics, "DATA2": self.company_expected_metrics}
         )
 
         bayesian_model_output = {
@@ -92,9 +90,6 @@ class HelloCredit:
         return self.output_dict
 
    
-
-
-
 def calculate_credit_rating(metrics, ratios):
     calculation_details = {"metrics": {}}
 

@@ -1,10 +1,8 @@
-
 import os
-import json
-import hashlib
 import time
 from datetime import datetime
-from typing import Dict, List, Tuple
+import json
+import hashlib
 
 import pandas as pd
 import pandera as pa
@@ -13,7 +11,9 @@ import streamlit as st
 from hellocredit import HelloCredit
 from hellocredit.utils import validate_dataframe
 from hellocredit.helpers import COMPANY_SECTOR_OPTIONS, COMPANY_SIZE_OPTIONS
-BASE_PATH = r"C:\Users\103763\Projects\HELLO_CREDIT"
+
+BASE_PATH = os.getcwd() 
+API_KEY = "sk-proj-Tzd95Nr8di5wXfkkfU7GT3BlbkFJZNuNrBwbi8pepTWpSsCu"
 
 
 def create_download_button(file_path: str, label: str, file_name: str):
@@ -34,7 +34,7 @@ def get_work_directory(company_name: str, filepath: str) -> str:
 
 def load_config(company_sector: str, company_size: str) -> dict:
     size = company_size.lower()
-    file_path = "metrics_large.json" if size == "large" else "metrics.json"
+    file_path = "metrics_large.json" if size == "large" else "metrics_small.json"
     with open(file_path, "r") as f:
         return json.load(f)
 
@@ -94,6 +94,8 @@ def main():
     st.markdown("#### CreditWatch.")
     st.title("Upload Company Metrics")
     st.markdown("##")
+    
+    api_key = st.sidebar.text_input("Enter your API Key (used for AI response)", value=API_KEY, type="password")
 
     # Initialize session state
     if 'company_name' not in st.session_state:
@@ -108,6 +110,8 @@ def main():
         st.session_state.work_directory = None
     if 'excel_file_path' not in st.session_state:
         st.session_state.excel_file_path = None
+    if 'api_key' not in st.session_state:
+        st.session_state.api_key = api_key
 
     st.session_state.company_name = st.text_input("Enter Company Name", st.session_state.company_name)
     company_sector = st.selectbox("Select the sector of the company", COMPANY_SECTOR_OPTIONS, index=0, disabled=True)
@@ -151,12 +155,12 @@ def main():
                 company_sector
             )
         
-            model = HelloCredit(input_dict)
+            model = HelloCredit(api_key, input_dict)
             st.session_state.output_dict = model.run_function()
             st.session_state.input_dict = input_dict
             st.session_state.run_progress_bar = True
             st.session_state.toast = True
-            
+
             st.switch_page("pages/Credit_Watch.py")
 
     
@@ -166,10 +170,10 @@ def main():
                 Ensure the data is adjusted based on the company's size for accurate analysis by the model:")
             
             metrics_info = {
-                "Ebitda Margin": "Measures operational profitability as a percentage of revenue. EBITDA / Revenue",
+                "Ebitda Margin": "Measures operational profitability as a percentage of revenue. EBITDA / Revenue * 100",
                 "Total Assets": "Sum of all current and non-current assets owned by the company. Sum of all assets",
-                "Sales Growth": "Year-over-year percentage increase in sales or revenue. (Current Sales - Prior Sales) / Prior Sales",
-                "Debt To Equity": "Ratio of total debt to shareholders' equity, indicating leverage. Total Debt / Shareholders' Equity",
+                "Sales Growth": "Year-over-year percentage increase in sales or revenue. (Current Sales - Prior Sales) / Prior Sales * 100",
+                "Debt To Equity": "Ratio of total debt to shareholders' equity, indicating leverage. Total Debt / Shareholders' Equity * 100",
                 "Debt To Ebitda": "Ratio of total debt to EBITDA, indicating ability to pay off debt. Total Debt / EBITDA",
                 "Ebitda To Interest Expense": "Ratio of EBITDA to interest expense, showing ability to cover interest payments. EBITDA / Interest Expense",
                 "Debt To Tangible Assets": "Ratio of total debt to tangible assets, showing leverage relative to physical assets. Total Debt / Tangible Assets",
@@ -180,19 +184,16 @@ def main():
             df = pd.DataFrame.from_dict(metrics_info, orient="index", columns=["Description"])
             st.table(df)
 
-            small_company_template = f"{BASE_PATH}\creditwatch_small_medium_company_template.xlsx"
-            large_company_template = f"{BASE_PATH}\creditwatch_large_company_template.xlsx"
-
             col_1, _, col_2 = st.columns(3)
             with col_1:
                 create_download_button(
-                    small_company_template,
+                    os.path.join(BASE_PATH, r"assets\templates\creditwatch_small_medium_company_template.xlsx"),
                     "Download Template\n\n(Small & Medium Company)",
                     "creditwatch_small_medium_company_template.xlsx"
                 )
             with col_2:
                 create_download_button(
-                    large_company_template,
+                    os.path.join(BASE_PATH, r"assets\templates\creditwatch_large_company_template.xlsx"),
                     "Download Template\n\n(Large Company)",
                     "creditwatch_large_company_template.xlsx"
                 )

@@ -1,0 +1,15 @@
+{
+  "credit_analysis": {
+    "summary": "The company's financial metrics indicate a deterioration in creditworthiness over time, characterized by increased leverage and declining profitability. Key ratios such as debt-to-equity and debt-to-EBITDA suggest heightened financial risk, while continuously low EBITDA margins and sales growth may hinder the company's ability to service its debt obligations effectively.",
+    "key_strengths": [
+      "The company has maintained a relatively strong EBITDA-to-interest expense ratio, averaging 3.52, indicating adequate coverage of interest expenses, which is a positive signal regarding its ability to meet interest payments.",
+      "Asset turnover remains above the historical average of 0.801, reflecting efficient use of assets in generating sales.",
+      "Despite fluctuations, the company shows resilience in maintaining a reasonable cash-to-assets ratio, averaging 11.60, which suggests a solid liquidity position."
+    ],
+    "potential_risks": [
+      "The debt-to-equity ratio has increased significantly, reaching 5.62, which is substantially higher than the historical average of 2.37. This escalated leverage poses a risk to financial stability and may lead to increased borrowing costs.",
+      "The debt-to-EBITDA ratio has also surged to 25.82, far exceeding the average of 10.06, indicating that the company's debt levels are unsustainable relative to its earnings potential.",
+      "Profitability metrics such as the EBITDA margin have shown a downward trend, with the latest value at -2.79 compared to the average of 10.15, raising concerns about the company's operational viability and capacity to generate profits."
+    ]
+  }
+}

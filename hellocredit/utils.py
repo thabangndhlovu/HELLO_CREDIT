@@ -31,16 +31,18 @@ def validate_dataframe(df: pd.DataFrame, company_size: str) -> pd.DataFrame:
         "Small": [
             "debt_to_equity", "debt_to_ebitda", "ebitda_to_interest_expense",
             "debt_to_tangible_assets", "asset_turnover", "inventory_to_cost_of_sales",
-            "cash_to_assets", "ebitda_margin", "total_assets", "sales_growth"
+            "cash_to_assets", "ebitda_margin", "total_assets", "sales_growth",
+            "return_on_assets"
         ],
         "Medium": [
             "debt_to_equity", "debt_to_ebitda", "ebitda_to_interest_expense",
             "debt_to_tangible_assets", "asset_turnover", "inventory_to_cost_of_sales",
-            "cash_to_assets", "ebitda_margin", "total_assets", "sales_growth"
+            "cash_to_assets", "ebitda_margin", "total_assets", "sales_growth",
+            "return_on_assets"
         ],
         "Large": [
             "debt_to_equity", "debt_to_ebitda", "ebitda_to_interest_expense",
-            "asset_turnover", "ebitda_margin"
+            "asset_turnover", "ebitda_margin", "return_on_assets"
         ]
     }
     
@@ -66,16 +68,6 @@ def percentage_to_rating(percentage):
     
     scale = 10 - (percentage + 100) / 200 * 7.5
     return next((rating, round(scale, 2)) for rating, threshold in MAPPED_RATINGS if scale <= threshold)
-
-
-
-
-
-
-
-
-
-
 
 
 
