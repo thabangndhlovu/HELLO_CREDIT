@@ -7,63 +7,54 @@ from langchain_core.output_parsers.json import SimpleJsonOutputParser
 
 
 template = """
+Role: Senior credit analyst specializing in credit risk assessment.
 
-Role:
-You are an experienced senior credit analyst specializing in credit risk assessment.
-
-Task:
-Analyze the financial health and creditworthiness of a company using the provided financial ratios and metrics. 
-Produce a comprehensive credit analysis report, highlighting a specific theme in your overall analysis, and cite specific metrics to support your findings.
-
-Tone and Style:
-Maintain a formal and objective.
+Task: Analyze the company's financial health and creditworthiness using provided financial ratios and metrics. 
+Produce a concise yet comprehensive credit analysis report.
 
 Input Data:
-
 DATA1: Time series of financial ratios and metrics.
 DATA2: Mean values of these metrics across the time series.
 
-**Instructions**
+Instructions:
 
-Leverage and Coverage:
-Analyze the following ratios: debt-to-equity, debt-to-EBITDA, EBITDA-to-interest expense, and debt-to-tangible assets.
-Assess the company’s ability to manage debt and financial risk.
-Focus on trends and their implications for future solvency.
+1. Leverage and Coverage:
+   Analyze: debt-to-equity, debt-to-EBITDA, EBITDA-to-interest expense, debt-to-tangible assets
+   Assess: Debt management, financial risk, solvency trends
 
-Efficiency:
-Analyze the following ratios: asset turnover, inventory-to-cost of sales, and cash-to-assets.
-Assess the company’s operational efficiency and working capital management.
-Evaluate trends and their implications for the company's operations.
+2. Efficiency:
+   Analyze: asset turnover, inventory-to-cost of sales, cash-to-assets
+   Assess: Operational efficiency, working capital management, operational trends
 
-Profitability:
-Analyze the EBITDA margin.
-Assess its impact on the company’s financial health and debt service ability.
-Consider trends and their sustainability.
-Overall Analysis:
+3. Profitability:
+   Analyze: EBITDA margin
+   Assess: Impact on financial health, debt service ability, sustainability
 
-Synthesize findings from the sections above into a cohesive analysis centered around a specific theme (e.g., the company’s resilience, risk exposure, or growth potential).
-Provide a comprehensive assessment of the company’s creditworthiness.
-Highlight key strengths and potential risks.
-
-Expected Output Format (JSON):
+4. Overall Analysis:
+   - Synthesize all findings into a cohesive analysis with a specific theme (e.g., financial stability, growth potential, risk exposure). 
+   - Provide a comprehensive assessment of the company's creditworthiness, integrating insights from leverage, efficiency, and profitability analyses. 
+   - Evaluate the company's overall credit position, considering industry benchmarks and economic conditions. 
+   - Quote specific metrics from DATA1 and DATA2 to support all conclusions.
+   - Highlight key strengths that enhance the company's creditworthiness, citing relevant metrics and trends. 
+   - Identify potential risks that could impact the company's financial health or ability to meet obligations. 
+   - Assess the likelihood and potential impact of these risks. 
+   - Conclude with a forward-looking statement on the company's credit outlook, considering all analyzed factors. 
+   - Ensure all assertions are substantiated with quantitative evidence from the provided data.
+   
+Output Format (JSON):
 "overall_analysis": str,
 "key_strengths": list,
 "potential_risks": list,
 "response": true
 
 Requirements:
-- Data-driven: Base your conclusions on the provided metrics.
-- Objective: Avoid personal biases and unsupported assumptions.
-- Comprehensive: Cover all aspects mentioned in the instructions.
-- Clear and Concise: Present insights in a straightforward manner, with correct paragraph spacing.
+- Data-driven and Quantitative: Base all conclusions and quotes on provided metrics
+- Objective: Avoid personal biases and unsupported assumptions
+- Comprehensive: Cover all instructed aspects and be complete
 
 Input Data:
-DATA1:
-{DATA1}
-
-DATA2:
-{DATA2}
-
+DATA1: {DATA1}
+DATA2: {DATA2}
 """
 
 def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
@@ -94,3 +85,5 @@ def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
             "overall_analysis": f"Error occurred while getting AI response: **{e}**",
             "response": False
         }
+
+
