@@ -67,6 +67,7 @@ DATA2:
 """
 
 def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
+    
     file = os.path.join(file_path, "llm_analysis.json")
     
     if os.path.exists(file):
@@ -79,7 +80,6 @@ def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
             model="gpt-4o-mini",
             api_key=api_key,
             model_kwargs={"response_format": {"type": "json_object"}},
-            #max_tokens=100
         )
 
         chain = prompt | model | SimpleJsonOutputParser()
@@ -91,6 +91,6 @@ def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
     
     except Exception as e:
         return {
-            "executive_analysis": f"Error occurred while getting AI response: **{e}**",
+            "overall_analysis": f"Error occurred while getting AI response: **{e}**",
             "response": False
         }

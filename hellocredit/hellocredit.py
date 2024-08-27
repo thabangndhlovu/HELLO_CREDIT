@@ -7,8 +7,8 @@ import numpy as np
 import pandas as pd
 
 from hellocredit.utils import get_rating_meta
-from hellocredit.helpers import MAPPED_RATINGS
 from hellocredit.llm_model import get_llm_response
+from hellocredit.helpers import MAPPED_RATINGS
 
 
 @dataclass

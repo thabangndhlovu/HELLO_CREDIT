@@ -1,1 +1,0 @@
-https://ratings.moodys.com/rating-methodologies
