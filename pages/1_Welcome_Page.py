@@ -13,10 +13,10 @@ st.markdown("""
 """)
 
 if st.button("Get Started", key="upload_data_button", help="Upload your data and start credit-watching!", type="primary", use_container_width=True):
-    st.switch_page("3_Upload_Data.py")
+    st.switch_page("pages/3_Upload_Data.py")
 
 if st.button("Documentation", key="documentation_button", help="View the documentation", use_container_width=True):
-    st.switch_page("2_Documentation.py")
+    st.switch_page("pages/2_Documentation.py")
 
 st.markdown("""
 ---
