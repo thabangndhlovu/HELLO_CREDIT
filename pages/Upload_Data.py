@@ -187,13 +187,13 @@ def main():
             col_1, _, col_2 = st.columns(3)
             with col_1:
                 create_download_button(
-                    os.path.join(BASE_PATH, r"assets\templates\creditwatch_small_medium_company_template.xlsx"),
+                    "https://github.com/thabangndhlovu/HELLO_CREDIT/blob/3858c81d2469187833786554f9d1b7171fd8c255/creditwatch_small_medium_company_template.xlsx",
                     "Download Template\n\n(Small & Medium Company)",
                     "creditwatch_small_medium_company_template.xlsx"
                 )
             with col_2:
                 create_download_button(
-                    os.path.join(BASE_PATH, r"assets\templates\creditwatch_large_company_template.xlsx"),
+                    "https://github.com/thabangndhlovu/HELLO_CREDIT/blob/3858c81d2469187833786554f9d1b7171fd8c255/creditwatch_large_company_template.xlsx",
                     "Download Template\n\n(Large Company)",
                     "creditwatch_large_company_template.xlsx"
                 )
