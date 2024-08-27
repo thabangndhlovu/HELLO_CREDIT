@@ -1,3 +1,4 @@
 plotly
 pandera
+openpyxl
 langchain-openai
