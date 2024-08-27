@@ -2,3 +2,4 @@ plotly
 pandera
 openpyxl
 langchain-openai
+scikit-learn
