@@ -16,4 +16,4 @@ st.caption("*Rating scale, Descriptions and Expected Loss percentages are \
 
 
 if st.button("Back", type="primary", use_container_width=True):
-  st.switch_page("pages/credit_watch.py")
+  st.switch_page("pages/4_Credit_Watch.py")

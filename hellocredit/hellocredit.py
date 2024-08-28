@@ -3,13 +3,16 @@ import json
 from functools import partial
 from dataclasses import field, dataclass
 
-import numpy as np
 import pandas as pd
 
 from hellocredit.utils import get_rating_meta
 from hellocredit.llm_model import get_llm_response
 from hellocredit.helpers import MAPPED_RATINGS
 
+# TODO:
+# Find a way to adjust the rating based on the history given, 1yr, 3yr, 5yr views
+# Quantify the scales e.g Aaa
+# Back test against universe data
 
 @dataclass
 class HelloCredit:
@@ -157,15 +160,15 @@ def get_expected_metrics(data, n=100):
     }
 
 
-def get_nested_dict(data):
-    nested_dict = {}
+# def get_nested_dict(data):
+#     nested_dict = {}
 
-    for (category, metric), values in data.iterrows():
-        if category not in nested_dict:
-            nested_dict[category] = {}
-        nested_dict[category][metric] = values.tolist()
+#     for (category, metric), values in data.iterrows():
+#         if category not in nested_dict:
+#             nested_dict[category] = {}
+#         nested_dict[category][metric] = values.tolist()
 
-    return nested_dict
+#     return nested_dict
 
 
 def get_nested_dict(file_path):

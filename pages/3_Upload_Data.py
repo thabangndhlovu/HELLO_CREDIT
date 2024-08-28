@@ -1,11 +1,8 @@
 import os
-import time
-from datetime import datetime
 import json
 import hashlib
 
 import pandas as pd
-import pandera as pa
 import streamlit as st
 
 from hellocredit import HelloCredit
@@ -13,7 +10,7 @@ from hellocredit.utils import validate_dataframe
 from hellocredit.helpers import COMPANY_SECTOR_OPTIONS, COMPANY_SIZE_OPTIONS
 
 BASE_PATH = os.getcwd() 
-API_KEY = "sk-proj-Tzd95Nr8di5wXfkkfU7GT3BlbkFJZNuNrBwbi8pepTWpSsCu"
+API_KEY = ""
 
 
 def create_download_button(file_path: str, label: str, file_name: str):
@@ -27,7 +24,6 @@ def create_download_button(file_path: str, label: str, file_name: str):
 
 def get_work_directory(company_name: str, filepath: str) -> str:
     company_name = company_name.lower().replace(" ", "_").strip()
-    filename = os.path.splitext(os.path.basename(filepath))[0]
     with open(filepath, "rb") as f:
         hash_value = hashlib.sha256(f.read()).hexdigest()[:16]
     return os.path.abspath(f"public/work_directory/{hash_value}")

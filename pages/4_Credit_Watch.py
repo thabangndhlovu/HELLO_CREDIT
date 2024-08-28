@@ -1,6 +1,5 @@
 import json
 import time
-import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.express as px
@@ -100,7 +99,8 @@ def main():
     ])
 
     with tab_1:
-        st.subheader("Financial Metrics")
+        st.header("Financial Metrics")
+
         company_expected_metrics = output_dict["company_expected_metrics"]
         cols = st.columns(3)
         
@@ -203,12 +203,12 @@ def main():
 
     with tab_3:
         metrics = input_dict["configuration"]
-        st.subheader("Factor Weights")
+        st.header("Factor Weights")
         st.write("""
         The Factor Weights tab enables customisation of the CreditWatch. by adjusting 
         the importance of various financial metrics class. Use the sliders to assign weights 
         to four metric categories: Profitability, Leverage & Coverage, Efficiency, 
-        and Financial Policy. Tailoring these weights allows alignment with your 
+        and EGS. Tailoring these weights allows alignment with your 
         specific risk assessment criteria and industry focus, emphasising the most 
         relevant metrics for your analysis.
         """)
@@ -219,14 +219,14 @@ def main():
             ("Profitability", metrics['profitability_metrics']['class_weight']),
             ("Leverage & Coverage", metrics['leverage_coverage_metrics']['class_weight']),
             ("Efficiency", metrics['efficiency_metrics']['class_weight']),
-            ("Financial Policy", input_dict["financial_policy"])
+            ("EGS", input_dict["financial_policy"])
         ]
 
         factor_weights = {}
         
         with col_1:
             for metric, default_weight in metrics_data:
-                is_financial_policy = metric == "Financial Policy"
+                is_financial_policy = metric == "EGS"
                 factor_weights[metric] = st.slider(
                     metric,
                     min_value=-100 if is_financial_policy else 0,
@@ -253,26 +253,26 @@ def main():
         input_dict["configuration"]["leverage_coverage_metrics"]["class_weight"] = factor_weights["Leverage & Coverage"]
         input_dict["configuration"]["profitability_metrics"]["class_weight"] = factor_weights["Profitability"]
         input_dict["configuration"]["efficiency_metrics"]["class_weight"] = factor_weights["Efficiency"]
-        input_dict["financial_policy"] = factor_weights["Financial Policy"]
+        input_dict["financial_policy"] = factor_weights["EGS"]
 
         
-        if abs(factor_weights['Financial Policy']) > 0.0:
-            st.markdown(
-            """
-            **Financial Policy**
+        # if abs(factor_weights['EGS']) > 0.0:
+        #     st.markdown(
+        #     """
+        #     **EGS**
 
-            This factor assesses the management and board's tolerance for financial risk, \
-            which directly impacts debt levels, credit quality, and the potential \
-            for adverse changes in financing and capital structure. The evaluation \
-            takes into account the company's public commitments regarding financial \
-            policy, its history of adhering to these commitments, and the analyst's \
-            perspective on the company's capability to achieve its stated targets.
-            """
-        )
+        #     This factor assesses the management and board's tolerance for financial risk, \
+        #     which directly impacts debt levels, credit quality, and the potential \
+        #     for adverse changes in financing and capital structure. The evaluation \
+        #     takes into account the company's public commitments regarding financial \
+        #     policy, its history of adhering to these commitments, and the analyst's \
+        #     perspective on the company's capability to achieve its stated targets.
+        #     """
+        # )
 
 
     with tab_4:
-        st.subheader("Probabilistic Model")
+        st.header("Probabilistic Model")
         st.write("""
         The Probabilistic Model enables you to predict various financial metrics and 
         credit ratings using Bayesian analysis.
@@ -353,13 +353,13 @@ def main():
 
     
     with tab_5:
-        st.subheader("Rating Factors")
+        st.header("Rating Factors")
         tab_1, tab_2 = st.tabs(["Feature Contribution", "Summary Table"])
 
         with tab_1:
             class_scores = output_dict["calculator_output"]["scores"]
             
-            if abs(factor_weights['Financial Policy']) > 0.0:
+            if abs(factor_weights['EGS']) > 0.0:
                 class_scores.update({"financial_policy": financial_policy_score})
 
             # Extracting data and assigning ratings
@@ -406,7 +406,7 @@ def main():
             - **Profitability** ({normalised_weights["Profitability"]:.2%}): Measures like profit margins and return on assets
             - **Leverage & Coverage** ({normalised_weights["Leverage & Coverage"]:.2%}): Debt and interest coverage ratios
             - **Efficiency** ({normalised_weights["Efficiency"]:.2%}): Operational and asset use efficiency
-            - **Financial Policy** ({normalised_weights["Financial Policy"]:.2%}): Evaluates management's risk tolerance and impact on debt, credit quality, and capital structure
+            - **EGS** ({normalised_weights["EGS"]:.2%}): Evaluates company's commitment to sustainable and ethical practices. 
             """)
         
         with tab_2:
@@ -417,15 +417,15 @@ def main():
             summary_table_df.index = summary_table_df.index.map(clean_string)        
             summary_table_df['Category'] = summary_table_df['Category'].apply(clean_string)
             
-            if abs(factor_weights['Financial Policy']) > 0.0:
+            if abs(factor_weights['EGS']) > 0.0:
                 fin_policy_sum = pd.DataFrame({
-                    "Category": ["Financial Policy"],
-                    "Value": [factor_weights['Financial Policy']],
+                    "Category": ["EGS"],
+                    "Value": [factor_weights['EGS']],
                     "Score": [""],
                     "Weight": [financial_policy_percentage],
                     "Weighted Score": [financial_policy_percentage_weighted],
                     "Rating": [financial_policy_rating]
-                }, index=["Financial Policy"])
+                }, index=["EGS"])
                 
                 summary_table_df = pd.concat([summary_table_df, fin_policy_sum])
             

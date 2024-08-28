@@ -8,7 +8,7 @@ st.set_page_config(
 )
 
 st.markdown("""
-# CreditWatch. - Credit Intelligence
+# CreditWatch.
 #
 """)
 
