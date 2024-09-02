@@ -23,11 +23,11 @@ def create_download_button(file_path: str, label: str, file_name: str):
         )
 
 
-def get_work_directory(company_name: str, filepath: str) -> str:
-    company_name = company_name.lower().replace(" ", "_").strip()
+def get_work_directory(filepath: str) -> str:
     with open(filepath, "rb") as f:
         hash_value = hashlib.sha256(f.read()).hexdigest()[:16]
-    return os.path.abspath(f"public/work_directory/{hash_value}")
+    abs_path = os.path.join(BASE_PATH, os.path.abspath(f"public/work_directory/{hash_value}"))
+    return abs_path
 
 
 def load_config(company_sector: str, company_size: str) -> dict:
@@ -47,9 +47,8 @@ def save_uploaded_file(folder: str, uploaded_file) -> str:
         f.write(uploaded_file.getbuffer())
     return file_path
 
-
-def process_uploaded_file(uploaded_file: str, company_name: str, company_size: str):
-    work_directory = get_work_directory(company_name, uploaded_file.name)
+def process_uploaded_file(uploaded_file: str, company_size: str):
+    work_directory = get_work_directory(uploaded_file.name)
     excel_file_path = save_uploaded_file(work_directory, uploaded_file)
 
     df = pd.read_excel(excel_file_path, index_col=[0, 1])
@@ -135,6 +134,7 @@ def main():
 
     if uploaded_file is not None:
         st.session_state.uploaded_file = uploaded_file
+        save_uploaded_file(".", uploaded_file)
 
     if st.session_state.uploaded_file is not None:
         try:
@@ -145,7 +145,6 @@ def main():
                     st.session_state.validated_df,
                 ) = process_uploaded_file(
                     st.session_state.uploaded_file,
-                    st.session_state.company_name,
                     st.session_state.company_size,
                 )
 
@@ -205,14 +204,12 @@ def main():
             col_1, _, col_2 = st.columns(3)
             with col_1:
                 create_download_button(
-                    # "https://github.com/thabangndhlovu/HELLO_CREDIT/blob/3858c81d2469187833786554f9d1b7171fd8c255/creditwatch_small_medium_company_template.xlsx",
                     "public/creditwatch_small_medium_company_template.xlsx",
                     "Download Template\n\n(Small & Medium Company)",
                     "creditwatch_small_medium_company_template.xlsx",
                 )
             with col_2:
                 create_download_button(
-                    # "https://github.com/thabangndhlovu/HELLO_CREDIT/blob/3858c81d2469187833786554f9d1b7171fd8c255/creditwatch_large_company_template.xlsx",
                     "public/creditwatch_large_company_template.xlsx",
                     "Download Template\n\n(Large Company)",
                     "creditwatch_large_company_template.xlsx",
