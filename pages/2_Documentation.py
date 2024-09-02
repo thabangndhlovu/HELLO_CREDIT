@@ -2,9 +2,7 @@ import streamlit as st
 
 
 st.set_page_config(
-    page_title="Documentation", 
-    layout="centered", 
-    initial_sidebar_state="collapsed"
+    page_title="Documentation", layout="centered", initial_sidebar_state="collapsed"
 )
 
 st.markdown("""
@@ -125,6 +123,5 @@ Where n is the number of observations in the dataset.
 """)
 
 
-
 if st.button("Back", type="primary", use_container_width=True):
-  st.switch_page("main.py")
+    st.switch_page("main.py")

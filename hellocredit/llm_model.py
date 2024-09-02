@@ -57,14 +57,14 @@ DATA1: {DATA1}
 DATA2: {DATA2}
 """
 
+
 def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
-    
     file = os.path.join(file_path, "llm_analysis.json")
-    
+
     if os.path.exists(file):
         with open(file, "r") as f:
             return json.load(f)
-    
+
     try:
         prompt = ChatPromptTemplate.from_template(template)
         model = ChatOpenAI(
@@ -79,11 +79,9 @@ def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
         with open(file, "w") as f:
             json.dump(response, f)
         return response
-    
+
     except Exception as e:
         return {
             "overall_analysis": f"Error occurred while getting AI response: **{e}**",
-            "response": False
+            "response": False,
         }
-
-
