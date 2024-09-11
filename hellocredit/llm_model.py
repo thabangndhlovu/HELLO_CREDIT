@@ -7,58 +7,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers.json import SimpleJsonOutputParser
 
 MODEL = "gemini-1.5-pro-exp-0801"
-API_KEY = "AIzaSyBvCf8bEVqoxLNL7hQcmYDT3153NC1Ea8E"
-os.environ["GOOGLE_API_KEY"] = API_KEY
+os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
 
-
-# template = """
-# Role: Senior credit analyst specializing in credit risk assessment.
-
-# Task: Analyze the company's financial health and creditworthiness using provided financial ratios and metrics. 
-# Produce a comprehensive credit analysis report.
-
-# Input Data:
-# - Time series of financial ratios and metrics
-# - Mean values of these metrics across the time series
-
-# Instructions:
-
-# 1. Leverage and Coverage:
-#    - Analyze: debt-to-equity, debt-to-EBITDA, EBITDA-to-interest expense, debt-to-tangible assets
-#    - Assess: Debt management, financial risk, solvency trends
-
-# 2. Efficiency:
-#    - Analyze: asset turnover, inventory-to-cost of sales, cash-to-assets
-#    - Assess: Operational efficiency, working capital management, operational trends
-
-# 3. Profitability:
-#    - Analyze: EBITDA margin
-#    - Assess: Impact on financial health, debt service ability, sustainability
-
-# 4. Overall Analysis:
-#    - Synthesize findings into a cohesive analysis with a specific theme (e.g., financial stability, growth potential, risk exposure)
-#    - The theme title should be poetry, evoking emotion and credit analysis (it should start with markdown h3 e.g '### ').
-#    - Provide a comprehensive assessment of the company's creditworthiness, integrating insights from leverage, efficiency, and profitability analyses
-#    - Evaluate the company's overall credit position, considering industry benchmarks and economic conditions
-#    - Quote specific metrics and period(s) from the provided data to support all conclusions
-#    - Highlight key strengths that enhance the company's creditworthiness, citing relevant metrics and trends
-#    - Identify potential risks that could impact the company's financial health or ability to meet obligations
-#    - Assess the likelihood and potential impact of these risks
-#    - Conclude with a forward-looking statement on the company's credit outlook, considering all analyzed factors
-#    - Ensure all assertions are substantiated with quantitative evidence from the provided data
-#    - Separate the sections in markdown to improve readability 
-
-# Output Format (json):
-# "overall_analysis": "string",
-# "key_strengths": ["string"],
-# "potential_risks": ["string"],
-# "response": true
-
-# Input Data:
-# DATA1: {DATA1}
-# DATA2: {DATA2}
-
-# """
 
 template = """
 Role: Senior Credit Analyst
