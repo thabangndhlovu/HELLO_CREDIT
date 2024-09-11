@@ -2,61 +2,122 @@ import os
 import json
 
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers.json import SimpleJsonOutputParser
 
+MODEL = "gemini-1.5-pro-exp-0801"
+API_KEY = "AIzaSyBvCf8bEVqoxLNL7hQcmYDT3153NC1Ea8E"
+os.environ["GOOGLE_API_KEY"] = API_KEY
+
+
+# template = """
+# Role: Senior credit analyst specializing in credit risk assessment.
+
+# Task: Analyze the company's financial health and creditworthiness using provided financial ratios and metrics. 
+# Produce a comprehensive credit analysis report.
+
+# Input Data:
+# - Time series of financial ratios and metrics
+# - Mean values of these metrics across the time series
+
+# Instructions:
+
+# 1. Leverage and Coverage:
+#    - Analyze: debt-to-equity, debt-to-EBITDA, EBITDA-to-interest expense, debt-to-tangible assets
+#    - Assess: Debt management, financial risk, solvency trends
+
+# 2. Efficiency:
+#    - Analyze: asset turnover, inventory-to-cost of sales, cash-to-assets
+#    - Assess: Operational efficiency, working capital management, operational trends
+
+# 3. Profitability:
+#    - Analyze: EBITDA margin
+#    - Assess: Impact on financial health, debt service ability, sustainability
+
+# 4. Overall Analysis:
+#    - Synthesize findings into a cohesive analysis with a specific theme (e.g., financial stability, growth potential, risk exposure)
+#    - The theme title should be poetry, evoking emotion and credit analysis (it should start with markdown h3 e.g '### ').
+#    - Provide a comprehensive assessment of the company's creditworthiness, integrating insights from leverage, efficiency, and profitability analyses
+#    - Evaluate the company's overall credit position, considering industry benchmarks and economic conditions
+#    - Quote specific metrics and period(s) from the provided data to support all conclusions
+#    - Highlight key strengths that enhance the company's creditworthiness, citing relevant metrics and trends
+#    - Identify potential risks that could impact the company's financial health or ability to meet obligations
+#    - Assess the likelihood and potential impact of these risks
+#    - Conclude with a forward-looking statement on the company's credit outlook, considering all analyzed factors
+#    - Ensure all assertions are substantiated with quantitative evidence from the provided data
+#    - Separate the sections in markdown to improve readability 
+
+# Output Format (json):
+# "overall_analysis": "string",
+# "key_strengths": ["string"],
+# "potential_risks": ["string"],
+# "response": true
+
+# Input Data:
+# DATA1: {DATA1}
+# DATA2: {DATA2}
+
+# """
 
 template = """
-Role: Senior credit analyst specializing in credit risk assessment.
+Role: Senior Credit Analyst
 
-Task: Analyze the company's financial health and creditworthiness using provided financial ratios and metrics. 
-Produce a concise yet comprehensive credit analysis report.
+Task: Conduct a comprehensive credit risk assessment and produce a detailed credit analysis report for a company based on provided financial data.
 
 Input Data:
-DATA1: Time series of financial ratios and metrics.
-DATA2: Mean values of these metrics across the time series.
+- DATA1: Time series of financial ratios and metrics
+- DATA2: Mean values of these metrics across the time series
 
 Instructions:
 
-1. Leverage and Coverage:
-   Analyze: debt-to-equity, debt-to-EBITDA, EBITDA-to-interest expense, debt-to-tangible assets
-   Assess: Debt management, financial risk, solvency trends
+1. Analyze Key Financial Areas:
 
-2. Efficiency:
-   Analyze: asset turnover, inventory-to-cost of sales, cash-to-assets
-   Assess: Operational efficiency, working capital management, operational trends
+   a) Leverage and Coverage:
+      - Examine: debt-to-equity, debt-to-EBITDA, EBITDA-to-interest expense, debt-to-tangible assets
+      - Evaluate: Debt management, financial risk, and solvency trends
 
-3. Profitability:
-   Analyze: EBITDA margin
-   Assess: Impact on financial health, debt service ability, sustainability
+   b) Efficiency:
+      - Examine: asset turnover, inventory-to-cost of sales, cash-to-assets
+      - Evaluate: Operational efficiency, working capital management, and operational trends
 
-4. Overall Analysis:
-   - Synthesize all findings into a cohesive analysis with a specific theme (e.g., financial stability, growth potential, risk exposure). 
-   - Provide a comprehensive assessment of the company's creditworthiness, integrating insights from leverage, efficiency, and profitability analyses. 
-   - Evaluate the company's overall credit position, considering industry benchmarks and economic conditions. 
-   - Quote specific metrics from DATA1 and DATA2 to support all conclusions.
-   - Highlight key strengths that enhance the company's creditworthiness, citing relevant metrics and trends. 
-   - Identify potential risks that could impact the company's financial health or ability to meet obligations. 
-   - Assess the likelihood and potential impact of these risks. 
-   - Conclude with a forward-looking statement on the company's credit outlook, considering all analyzed factors. 
-   - Ensure all assertions are substantiated with quantitative evidence from the provided data.
-   
+   c) Profitability:
+      - Examine: EBITDA margin
+      - Evaluate: Impact on financial health, debt service ability, and sustainability
+
+2. Synthesize Overall Analysis:
+   - Develop a cohesive analysis with a specific theme (e.g., financial stability, growth potential, risk exposure)
+   - Create a poetic theme title that evokes emotion and relates to credit analysis (use markdown h3 format, e.g., '### [Your Title]')
+   - Provide a comprehensive assessment of the company's creditworthiness, integrating insights from all analyzed areas
+   - Support all conclusions with specific metrics and time periods from the provided data
+   - It should be one or two paragraphs
+
+3. Highlight Key Strengths:
+   - Identify and explain factors that enhance the company's creditworthiness
+   - Cite relevant metrics and trends to support each strength
+
+4. Identify Potential Risks:
+   - Outline factors that could negatively impact the company's financial health or ability to meet obligations
+   - Assess the likelihood and potential impact of each risk
+
+5. Conclude with Credit Outlook:
+   - Provide a forward-looking statement on the company's credit outlook, considering all analyzed factors
+
+6. Formatting Guidelines:
+   - Use markdown to separate sections and improve readability
+   - Ensure all assertions are supported by quantitative evidence from the provided data
+
 Output Format (JSON):
-"overall_analysis": str,
-"key_strengths": list,
-"potential_risks": list,
+"overall_analysis": "string",
+"key_strengths": ["string"],
+"potential_risks": ["string"],
 "response": true
-
-Requirements:
-- Data-driven and Quantitative: Base all conclusions and quotes on provided metrics
-- Objective: Avoid personal biases and unsupported assumptions
-- Comprehensive: Cover all instructed aspects and be complete
 
 Input Data:
 DATA1: {DATA1}
 DATA2: {DATA2}
-"""
 
+"""
 
 def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
     file = os.path.join(file_path, "llm_analysis.json")
@@ -67,9 +128,8 @@ def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
 
     try:
         prompt = ChatPromptTemplate.from_template(template)
-        model = ChatOpenAI(
-            model="gpt-4o-mini",
-            api_key=api_key,
+        model = ChatGoogleGenerativeAI(
+            model=MODEL,
             model_kwargs={"response_format": {"type": "json_object"}},
         )
 
@@ -82,6 +142,6 @@ def get_llm_response(file_path: str, api_key: str, model_inputs: dict) -> dict:
 
     except Exception as e:
         return {
-            "overall_analysis": f"Error occurred while getting AI response: **{e}**",
+            "overall_analysis": f"Error occurred while getting AI response: \n**{e}**",
             "response": False,
         }

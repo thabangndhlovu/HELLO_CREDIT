@@ -7,7 +7,7 @@ COMPANY_SECTOR_OPTIONS = [
     "Other",
 ]
 
-COMPANY_SIZE_OPTIONS = ["Small", "Medium", "Large"]
+COMPANY_SIZE_OPTIONS = ["Small", "Large"]
 
 
 MAPPED_RATINGS = [
@@ -72,7 +72,7 @@ RATING_META = {
         "In Default with Little Prospect for Recovery",
     ],
     "Probability of Default": [
-        "0.00%",
+        "< 0.01%",
         "0.01%",
         "0.10%",
         "0.46%",
@@ -95,4 +95,54 @@ COLOR_MAPPING = {
     "Caa": "#e06666",
     "Ca": "#cc0000",
     "C": "#990000",
+}
+
+ratings_dict = {
+    "Aaa": "AAA",
+    "Aa": ["AA+", "AA", "AA-", "Aa1", "Aa2", "Aa3"],
+    "A": ["A+", "A", "A-", "A1", "A2", "A3"],
+    "Baa": ["BBB+", "BBB", "BBB-", "Baa1", "Baa2", "Baa3"],
+    "Ba": ["BB+", "BB", "BB-", "Ba1", "Ba2", "Ba3"],
+    "B": ["B+", "B", "B-", "B1", "B2", "B3"],
+    "Caa": "CCC",
+    "Ca": "CC",
+    "C": "D"
+}
+
+
+flat_ratings_dict = {
+    'AAA': 'Aaa',
+     'AA+': 'Aa',
+     'AA': 'Aa',
+     'AA-': 'Aa',
+     'Aa1': 'Aa',
+     'Aa2': 'Aa',
+     'Aa3': 'Aa',
+     'A+': 'A',
+     'A': 'A',
+     'A-': 'A',
+     'A1': 'A',
+     'A2': 'A',
+     'A3': 'A',
+     'BBB+': 'Baa',
+     'BBB': 'Baa',
+     'BBB-': 'Baa',
+     'Baa1': 'Baa',
+     'Baa2': 'Baa',
+     'Baa3': 'Baa',
+     'BB+': 'Ba',
+     'BB': 'Ba',
+     'BB-': 'Ba',
+     'Ba1': 'Ba',
+     'Ba2': 'Ba',
+     'Ba3': 'Ba',
+     'B+': 'B',
+     'B': 'B',
+     'B-': 'B',
+     'B1': 'B',
+     'B2': 'B',
+     'B3': 'B',
+     'CCC': 'Caa',
+     'CC': 'Ca',
+     'D': 'C'
 }

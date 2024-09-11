@@ -103,7 +103,7 @@ The final credit rating is determined by mapping the overall credit score to the
 | Ca            | 8.5             |
 | C             | > 8.5           |
 
-## Model Training
+## Model Training (Machine Learning)
 
 The model undergoes a training process to optimise the category and metric weights used in the calculation. 
 The training process aims to minimise the difference between the predicted credit rating and the actual credit rating from rating agencies such as Moody's, Fitch, and S&P by adjusting the weights.
@@ -111,7 +111,9 @@ The training process aims to minimise the difference between the predicted credi
 The training process involves the following steps:
 
 1. Category and metric weights are initialised using industry norms.
-2. Gradient descent, category and metric weights are iteratively adjusted to minimise the loss function, which quantifies the difference between the predicted credit rating and the credit rating from rating agencies. The loss function used is the Mean Absolute Percentage Error (MAPE), calculated as:
+2. Gradient descent, category and metric weights are iteratively adjusted to minimise the loss function, which quantifies the difference between the predicted credit rating and the credit rating from rating agencies. 
+
+The loss function used is the Mean Absolute Percentage Error (MAPE), calculated as:
 
 ```
 MAPE = (1/n) * Σ |Actual - Predicted| / |Actual| * 100
@@ -119,7 +121,33 @@ MAPE = (1/n) * Σ |Actual - Predicted| / |Actual| * 100
 
 Where n is the number of observations in the dataset.
 
+Here's the content formatted as markdown:
 
+## Model Limitations
+
+While the `model_name` provides valuable insights into the credit rating of private small-to-medium sized and large companies, it's important to acknowledge its limitations:
+
+1. **Data Dependency**: The model relies heavily on financial metrics, which may not always be up-to-date or accurately reported, especially for private companies. The quality and timeliness of input data directly affect the model's accuracy.
+
+2. **Industry Specificity**: While the model uses industry-specific percentiles, it may not fully capture the nuances of all industries. Some sectors may have unique financial structures that are not adequately represented in the model.
+
+3. **Size Bias**: The model's training data is based on JSE All Share Index constituents, which may not perfectly represent the financial characteristics of small-to-medium sized companies.
+
+4. **Qualitative Factors**: The model focuses on quantitative financial metrics and does not account for qualitative factors such as management quality, market position, or regulatory environment, which can significantly impact a company's creditworthiness.
+
+5. **Economic Cycle Sensitivity**: The model may not fully capture the impact of economic cycles on a company's financial health, potentially leading to over-optimistic ratings during economic booms or overly pessimistic ratings during downturns.
+
+6. **Limited Historical Data**: For newer companies or those with limited financial history, the model may not provide as accurate an assessment due to insufficient data points.
+
+7. **Geographical Limitations**: The model's training data is primarily based on South African companies, which may limit its applicability to companies in other regions with different economic conditions or accounting standards.
+
+8. **Rapid Changes**: The model may not immediately reflect sudden changes in a company's financial situation or market conditions, as it relies on periodic financial reports.
+
+9. **Complex Financial Structures**: For companies with complex financial structures or those involved in significant M&A activities, the model may not fully capture the intricacies of their financial position.
+
+10. **Model Drift**: Over time, the model's accuracy may decrease if not regularly updated to reflect changing market conditions and industry norms.
+
+Users of this model should be aware of these limitations and use the model's output as one of several tools in a comprehensive credit assessment process, rather than as a sole determinant of creditworthiness.
 """)
 
 

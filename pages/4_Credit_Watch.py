@@ -34,7 +34,10 @@ def main():
         with open(f"{WORK_DIR}/input_dict.json", "r") as f:
             input_dict = json.load(f)
     except Exception:
-        st.switch_page("main.py")
+        st.info("Please upload your data before proceeding.")
+        time.sleep(0.5)        
+        st.switch_page("pages/3_Upload_Data.py")
+        st.stop()
 
     if st.session_state.run_progress_bar:
         progress_text = "Operation in progress. Please wait."
@@ -121,6 +124,8 @@ def main():
         "<style>div.row-widget.stRadio > div{flex-direction:row;justify-content: left;} </style>",
         unsafe_allow_html=True,
     )
+
+  
     company_size = st.radio(
         "Company Size",
         COMPANY_SIZE_OPTIONS,
@@ -236,7 +241,7 @@ def main():
             st.metric("Probability of Default", f"{probability_of_default}%")
 
         if output_dict["llm_response"].get("response"):
-            st.markdown("##### Summary Analysis")
+            #st.markdown("##### Summary Analysis")
             st.markdown(output_dict["llm_response"]["overall_analysis"])
 
             with st.expander("Highlights"):

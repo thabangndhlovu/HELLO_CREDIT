@@ -3,7 +3,9 @@ import json
 from functools import partial
 from dataclasses import field, dataclass
 
+import numpy as np
 import pandas as pd
+from sklearn.linear_model import BayesianRidge
 
 from hellocredit.utils import get_rating_meta
 from hellocredit.llm_model import get_llm_response
@@ -230,9 +232,6 @@ def bayesian_ridge_transform(data):
 def bayesian_ridge_model(
     metrics, periods=1, look_back_periods=5, max_iter=300, tol=1e-3
 ):
-    import numpy as np
-    from sklearn.linear_model import BayesianRidge
-
     predictions = {}
 
     for metric_group, values_dict in metrics.items():

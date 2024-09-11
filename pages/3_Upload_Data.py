@@ -199,6 +199,7 @@ def main():
             df = pd.DataFrame.from_dict(
                 metrics_info, orient="index", columns=["Description"]
             )
+            st.info("For optimal results, it is recommended to use data from the most recent 5 to 10 years/periods.")
             st.table(df)
 
             col_1, _, col_2 = st.columns(3)
