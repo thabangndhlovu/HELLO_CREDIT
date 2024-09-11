@@ -3,3 +3,6 @@ pandera
 openpyxl
 langchain-openai
 scikit-learn
+langchain-google-genai 
+pillow
+google-generativeai
