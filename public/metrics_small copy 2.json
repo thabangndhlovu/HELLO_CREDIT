@@ -1,6 +1,6 @@
 {
   "profitability_metrics": {
-    "class_weight": 20,
+    "class_weight": 15,
     "metric_weights": {
       "ebitda_margin": 0.25,
       "return_on_assets": 0.25,
@@ -67,12 +67,12 @@
     }
   },
   "leverage_coverage_metrics": {
-    "class_weight": 60,
+    "class_weight": 35,
     "metric_weights": {
-      "debt_to_equity": 0.20,
-      "debt_to_ebitda": 0.40,
-      "ebitda_to_interest_expense": 0.30,
-      "debt_to_tangible_assets": 0.10
+      "debt_to_equity": 0.1,
+      "debt_to_ebitda": 0.5,
+      "ebitda_to_interest_expense": 0.3,
+      "debt_to_tangible_assets": 0.1
     },
     "metrics": {
       "debt_to_equity": {
@@ -86,33 +86,33 @@
           [4.0, 5.0],
           [5.0, 7.5],
           [7.5, 10.0],
-          [10.0, Infinity],
-          [null, null]
+          [10.0, Infinity]
         ]
       },
       "debt_to_ebitda": {
         "lower_is_better": true,
         "thresholds": [
-          [-Infinity, 2.0],
+          [-Infinity, 1.0],
+          [1.0, 2.0],
           [2.0, 3.0],
           [3.0, 4.0],
           [4.0, 5.0],
           [5.0, 6.0],
-          [6.0, 7.0],
-          [7.0, 8.0],
-          [8.0, 9.0],
-          [9.0, Infinity]
+          [6.0, 8.0],
+          [8.0, 10.0],
+          [10.0, Infinity]
         ]
       },
       "ebitda_to_interest_expense": {
         "lower_is_better": false,
         "thresholds": [
-          [10.0, Infinity],
-          [8.0, 10.0],
+          [8.0, Infinity],
           [6.0, 8.0],
           [4.0, 6.0],
-          [2.0, 4.0],
-          [1.0, 2.0],
+          [3.0, 4.0],
+          [2.0, 3.0],
+          [1.5, 2.0],
+          [1.0, 1.5],
           [0.5, 1.0],
           [-Infinity, 0.5]
         ]
@@ -134,11 +134,11 @@
     }
   },
   "efficiency_metrics": {
-    "class_weight": 20,
+    "class_weight": 15,
     "metric_weights": {
-      "asset_turnover": 0.30,
-      "inventory_to_cost_of_sales": 0.35,
-      "cash_to_assets": 0.35
+      "asset_turnover": 0.5,
+      "inventory_to_cost_of_sales": 0.2,
+      "cash_to_assets": 0.3
     },
     "metrics": {
       "asset_turnover": {
@@ -172,12 +172,13 @@
       "cash_to_assets": {
         "lower_is_better": false,
         "thresholds": [
-          [0.5, Infinity],
-          [0.4, 0.5],
+          [0.4, Infinity],
           [0.3, 0.4],
           [0.2, 0.3],
-          [0.1, 0.2],
-          [0.05, 0.1],
+          [0.15, 0.2],
+          [0.1, 0.15],
+          [0.08, 0.1],
+          [0.05, 0.08],
           [0.02, 0.05],
           [-Infinity, 0.02]
         ]
