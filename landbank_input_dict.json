@@ -1,0 +1,147 @@
+{
+  "work_directory": "C:\\Users\\103763\\Projects\\HELLO_CREDIT\\public\\work_directory\\b249ec8d38bcf65a",
+  "file_path": "C:\\Users\\103763\\Projects\\HELLO_CREDIT\\public\\work_directory\\b249ec8d38bcf65a\\landbank_metrics.xlsx",
+  "company_meta": {
+    "company_name": "Landbank",
+    "company_size": "Large",
+    "company_sector": "Finance Companies"
+  },
+  "probabilistic_model": {
+    "periods": 2,
+    "look_back_periods": 5,
+    "max_iter": 300,
+    "tol": 0.001
+  },
+  "configuration": {
+    "profitability_metrics": {
+      "class_weight": 35,
+      "metric_weights": { "net_income_to_assets": 0.55 },
+      "metrics": {
+        "net_income_to_assets": {
+          "lower_is_better": false,
+          "thresholds": [
+            [40, Infinity],
+            [35, 40],
+            [30, 35],
+            [25, 30],
+            [20, 25],
+            [15, 20],
+            [10, 15],
+            [5, 10],
+            [-Infinity, 5]
+          ]
+        }
+      }
+    },
+    "capital_adequacy_and_leverage_metrics": {
+      "class_weight": 45,
+      "metric_weights": { "equity_to_tangible_assets": 1 },
+      "metrics": {
+        "equity_to_tangible_assets": {
+          "lower_is_better": true,
+          "thresholds": [
+            [-Infinity, 0.25],
+            [0.25, 0.5],
+            [0.5, 0.75],
+            [0.75, 1],
+            [1, 1.5],
+            [1.5, 2],
+            [2, 3],
+            [3, 5],
+            [5, Infinity]
+          ]
+        }
+      }
+    },
+    "asset_quality_metrics": {
+      "class_weight": 20,
+      "metric_weights": {
+        "problem_loans_to_gross_loans": 0.5,
+        "net_charge_offs_to_gross_loans": 0.5
+      },
+      "metrics": {
+        "problem_loans_to_gross_loans": {
+          "lower_is_better": false,
+          "thresholds": [
+            [5, Infinity],
+            [4, 5],
+            [3, 4],
+            [2.5, 3],
+            [2, 2.5],
+            [1.5, 2],
+            [1, 1.5],
+            [0.5, 1],
+            [-Infinity, 0.5]
+          ]
+        },
+        "net_charge_offs_to_gross_loans": {
+          "lower_is_better": false,
+          "thresholds": [
+            [5, Infinity],
+            [4, 5],
+            [3, 4],
+            [2.5, 3],
+            [2, 2.5],
+            [1.5, 2],
+            [1, 1.5],
+            [0.5, 1],
+            [-Infinity, 0.5]
+          ]
+        }
+      }
+    },
+    "cash_flow_and_liquidity_metrics": {
+      "class_weight": 20,
+      "metric_weights": {
+        "debt_maturities_coverage": 0.33,
+        "funds_from_operations_to_debt": 0.33,
+        "secured_debt_to_tangible_assets": 0.34
+      },
+      "metrics": {
+        "debt_maturities_coverage": {
+          "lower_is_better": false,
+          "thresholds": [
+            [5, Infinity],
+            [4, 5],
+            [3, 4],
+            [2.5, 3],
+            [2, 2.5],
+            [1.5, 2],
+            [1, 1.5],
+            [0.5, 1],
+            [-Infinity, 0.5]
+          ]
+        },
+        "funds_from_operations_to_debt": {
+          "lower_is_better": false,
+          "thresholds": [
+            [5, Infinity],
+            [4, 5],
+            [3, 4],
+            [2.5, 3],
+            [2, 2.5],
+            [1.5, 2],
+            [1, 1.5],
+            [0.5, 1],
+            [-Infinity, 0.5]
+          ]
+        },
+        "secured_debt_to_tangible_assets": {
+          "lower_is_better": false,
+          "thresholds": [
+            [5, Infinity],
+            [4, 5],
+            [3, 4],
+            [2.5, 3],
+            [2, 2.5],
+            [1.5, 2],
+            [1, 1.5],
+            [0.5, 1],
+            [-Infinity, 0.5]
+          ]
+        }
+      }
+    }
+  },
+  "financial_policy": 0
+}

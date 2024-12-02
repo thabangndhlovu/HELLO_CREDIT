@@ -19,7 +19,6 @@ from hellocredit.helpers import MAPPED_RATINGS
 
 @dataclass
 class HelloCredit:
-    api_key: str
     input_dict: dict = field(default_factory=dict)
 
     def __post_init__(self):
@@ -62,14 +61,6 @@ class HelloCredit:
             for period, metrics in enumerate(model_output_transform)
         }
 
-        llm_response = get_llm_response(
-            self.work_dir,
-            self.api_key,
-            {
-                "DATA1": self.company_period_metrics,
-                "DATA2": self.company_expected_metrics,
-            },
-        )
 
         bayesian_model_output = {
             "model_output": model_output,
@@ -84,7 +75,6 @@ class HelloCredit:
             "calculator_output": calculator_output,
             "calculator_periods_output": calculator_periods_output,
             "bayesian_model_output": bayesian_model_output,
-            "llm_response": llm_response,
         }
 
         files_to_dump = {
@@ -208,7 +198,7 @@ def get_nested_dict(file_path):
 
 
 def get_period_metrics(data):
-    n = len(data["leverage_coverage_metrics"]["debt_to_equity"])
+    n = max([len(data[metrics][metric]) for metrics in data for metric in data[metrics]])
     return {
         i: {
             category: {metric: values[i] for metric, values in metrics.items()}

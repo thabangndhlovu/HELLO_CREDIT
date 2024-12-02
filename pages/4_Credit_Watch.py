@@ -1,5 +1,6 @@
 import json
 import time
+
 import pandas as pd
 import streamlit as st
 import plotly.express as px
@@ -14,6 +15,7 @@ from hellocredit.helpers import (
     COMPANY_SIZE_OPTIONS,
 )
 from hellocredit.utils import get_credit_rating, percentage_to_rating, get_rating_meta
+from hellocredit.llm_model import get_llm_response, parse_company_profile_schema
 
 st.set_page_config(
     layout="centered", page_title="Credit Watch.", initial_sidebar_state="collapsed"
@@ -22,6 +24,9 @@ st.markdown(
     '#### <a href="../Welcome_Page.py" target="_self" style="text-decoration: none; color: inherit;">CreditWatch.</a>',
     unsafe_allow_html=True,
 )
+
+
+
 
 
 def main():
@@ -33,6 +38,9 @@ def main():
 
         with open(f"{WORK_DIR}/input_dict.json", "r") as f:
             input_dict = json.load(f)
+
+        output_dict["work_dir"] = WORK_DIR
+
     except Exception:
         st.info("Please upload your data before proceeding.")
         time.sleep(0.5)        
@@ -55,23 +63,12 @@ def main():
         input_dict["financial_policy"]
     )
 
-    total_weight = sum(
-        list(
-            map(
-                abs,
-                [
-                    input_dict["financial_policy"],
-                    input_dict["configuration"]["profitability_metrics"][
-                        "class_weight"
-                    ],
-                    input_dict["configuration"]["leverage_coverage_metrics"][
-                        "class_weight"
-                    ],
-                    input_dict["configuration"]["efficiency_metrics"]["class_weight"],
-                ],
-            )
-        )
+    total_weight = abs(input_dict["financial_policy"]) + sum(
+        abs(input_dict["configuration"][metric]["class_weight"])
+        for metric in input_dict["configuration"]
+        if "class_weight" in input_dict["configuration"][metric]
     )
+
 
     financial_policy_percentage = input_dict["financial_policy"] / total_weight
     financial_policy_contribution = financial_policy_score * financial_policy_percentage
@@ -149,7 +146,7 @@ def main():
         st.header("Financial Metrics")
 
         company_expected_metrics = output_dict["company_expected_metrics"]
-        cols = st.columns(3)
+        cols = st.columns(len(company_expected_metrics))
 
         for i, (category, metrics) in enumerate(company_expected_metrics.items()):
             with cols[i]:
@@ -158,7 +155,7 @@ def main():
                     unsafe_allow_html=True,
                 )
                 for metric, value in metrics.items():
-                    st.metric(metric.replace("_", " ").title(), round(value, 2))
+                    st.metric(metric.replace("_", " ").title(), f"{value:.2%}")
 
         st.caption(
             "*The presented values above represent the expected (average) \
@@ -211,15 +208,8 @@ def main():
                     title_standoff=25,
                     range=[1.5, 10.5],  # Keep this range to match your shapes
                     tickvals=[
-                        1.5,
-                        2.5,
-                        3.5,
-                        4.5,
-                        5.5,
-                        6.5,
-                        7.5,
-                        8.5,
-                        9.5,
+                        1.5, 2.5, 3.5, 4.5, 5.5, 
+                        6.5, 7.5, 8.5, 9.5,
                     ],  # Adjusted to start at 1.5
                     ticktext=[r[0] for r in MAPPED_RATINGS],
                     tickangle=0,
@@ -240,25 +230,35 @@ def main():
             st.markdown("#### ")
             st.metric("Probability of Default", f"{probability_of_default}%")
 
-        if output_dict["llm_response"].get("response"):
-            #st.markdown("##### Summary Analysis")
-            st.markdown(output_dict["llm_response"]["overall_analysis"])
+        # Asynchronous LLM response generation
+        with st.spinner('Generating AI analysis...'):
+            output_dict["llm_response"] = get_llm_response(
+                output_dict["work_dir"],
+                model_inputs={
+                    "DATA1": output_dict["company_period_metrics"],
+                    "DATA2": output_dict["company_expected_metrics"],
+                    "METRICS_SCHEMA": parse_company_profile_schema(input_dict["configuration"])
+            })
 
+        # Retrieve and process the response
+        response = output_dict["llm_response"]
+        if response["response"]:
+            st.markdown(response["overall_analysis"])
             with st.expander("Highlights"):
-                col_1, col_2 = st.columns(2)
-                with col_1:
+                col1, col_2 = st.columns(2)
+                with col1:
                     st.markdown("##### Key Strengths")
-                    for strength in output_dict["llm_response"]["key_strengths"]:
+                    for strength in response["key_strengths"]:
                         st.markdown(f"- {strength}")
-
                 with col_2:
                     st.markdown("##### Potential Risks")
-                    for risk in output_dict["llm_response"]["potential_risks"]:
+                    for risk in response["potential_risks"]:
                         st.markdown(f"- {risk}")
-
             st.caption("Generated with AI.")
         else:
-            st.error(output_dict["llm_response"]["overall_analysis"])
+            st.error(response.get("overall_analysis", "Unable to generate AI analysis"))
+                    
+
 
     with tab_3:
         metrics = input_dict["configuration"]
@@ -275,14 +275,11 @@ def main():
         col_1, col_2 = st.columns(2)
 
         metrics_data = [
-            ("Profitability", metrics["profitability_metrics"]["class_weight"]),
-            (
-                "Leverage & Coverage",
-                metrics["leverage_coverage_metrics"]["class_weight"],
-            ),
-            ("Efficiency", metrics["efficiency_metrics"]["class_weight"]),
-            ("EGS", input_dict["financial_policy"]),
-        ]
+            (metric.capitalize().replace("_", " "), metrics[metric]["class_weight"])
+            for metric in metrics
+            if metric != "financial_policy" and "class_weight" in metrics[metric]
+        ] + [("EGS", input_dict["financial_policy"])]
+
 
         factor_weights = {}
 
@@ -301,7 +298,7 @@ def main():
         with col_2:
             fig = px.pie(
                 values=list(map(abs, factor_weights.values())),
-                names=list(factor_weights.keys()),
+                names=list(map(lambda x: x.strip("metrics"), factor_weights.keys())),
             )
             fig.update_layout(
                 title="Factor Weight Distribution",
@@ -309,33 +306,22 @@ def main():
                 font=dict(size=14),
                 width=500,
                 height=500,
+                legend=dict(
+                    yanchor="top",
+                    y=-0.1,
+                    xanchor="center",
+                    x=0.5
+                )
             )
             st.plotly_chart(fig)
 
-        input_dict["configuration"]["leverage_coverage_metrics"]["class_weight"] = (
-            factor_weights["Leverage & Coverage"]
-        )
-        input_dict["configuration"]["profitability_metrics"]["class_weight"] = (
-            factor_weights["Profitability"]
-        )
-        input_dict["configuration"]["efficiency_metrics"]["class_weight"] = (
-            factor_weights["Efficiency"]
-        )
+
+        for metric in input_dict["configuration"]:
+            if "class_weight" in input_dict["configuration"][metric] and metric in factor_weights:
+                input_dict["configuration"][metric]["class_weight"] = factor_weights[metric.capitalize().replace("_", " ")]
+
         input_dict["financial_policy"] = factor_weights["EGS"]
 
-        # if abs(factor_weights['EGS']) > 0.0:
-        #     st.markdown(
-        #     """
-        #     **EGS**
-
-        #     This factor assesses the management and board's tolerance for financial risk, \
-        #     which directly impacts debt levels, credit quality, and the potential \
-        #     for adverse changes in financing and capital structure. The evaluation \
-        #     takes into account the company's public commitments regarding financial \
-        #     policy, its history of adhering to these commitments, and the analyst's \
-        #     perspective on the company's capability to achieve its stated targets.
-        #     """
-        # )
 
     with tab_4:
         st.header("Probabilistic Model")
@@ -488,13 +474,28 @@ def main():
                 for metric, weight in factor_weights.items()
             }
 
-            st.markdown(f"""
-            This chart displays the key factors that determine the overall credit rating and their relative importance. The rating is based on four main criteria:
+            descriptions = {
+                "Profitability": "Measures a company's ability to generate sustainable earnings and absorb losses",
+                "Leverage & Coverage": "Debt and interest coverage ratios",
+                "Efficiency": "Operational and asset use efficiency",
+                "Capital adequacy and leverage": "Assesses the company's capacity to absorb volatility, manage debt, and maintain financial flexibility",
+                "Asset quality": "Evaluates the risk and performance of assets, focusing on impairments and losses",
+                "Cash flow and liquidity": "Assesses the ability to generate cash and manage liquidity for financial obligations and growth"
+            }
+            factors_text = "\n"
+            factors_text += "\n".join([
+                f"- **{factor.strip('metrics').strip()}** ({normalised_weights[factor]:.2%}): {descriptions.get(factor.strip('metrics').strip(), '')}"
+                for factor in normalised_weights
+                if factor.strip('metrics').strip() != "EGS"
+            ])
 
-            - **Profitability** ({normalised_weights["Profitability"]:.2%}): Measures like profit margins and return on assets
-            - **Leverage & Coverage** ({normalised_weights["Leverage & Coverage"]:.2%}): Debt and interest coverage ratios
-            - **Efficiency** ({normalised_weights["Efficiency"]:.2%}): Operational and asset use efficiency
-            - **EGS** ({normalised_weights["EGS"]:.2%}): Evaluates company's commitment to sustainable and ethical practices. 
+            # Add EGS separately
+            factors_text += f"\n- **EGS** ({normalised_weights['EGS']:.2%}): Evaluates company's commitment to sustainable and ethical practices"
+
+            st.markdown(f"""
+            This chart displays the key factors that determine the overall credit rating and their relative importance. The rating is based on key criteria:
+
+            {factors_text}
             """)
 
         with tab_2:
@@ -533,8 +534,7 @@ def main():
             )
 
     if rerun_model:
-        API_KEY = ""
-        model = HelloCredit(API_KEY, input_dict)
+        model = HelloCredit(input_dict)
         model.run_function()
         st.rerun()
 

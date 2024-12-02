@@ -6,7 +6,7 @@ import pandas as pd
 import streamlit as st
 
 from hellocredit import HelloCredit
-from hellocredit.utils import validate_dataframe
+from hellocredit.utils import validate_dataframe, load_company_profile
 from hellocredit.helpers import COMPANY_SECTOR_OPTIONS, COMPANY_SIZE_OPTIONS
 
 BASE_PATH = os.getcwd()
@@ -30,15 +30,6 @@ def get_work_directory(filepath: str) -> str:
     return abs_path
 
 
-def load_config(company_sector: str, company_size: str) -> dict:
-    size = company_size.lower()
-
-    file_path = (
-        "public/metrics_large.json" if size == "large" else "public/metrics_small.json"
-    )
-    with open(file_path, "r") as f:
-        return json.load(f)
-
 
 def save_uploaded_file(folder: str, uploaded_file) -> str:
     os.makedirs(folder, exist_ok=True)
@@ -47,22 +38,21 @@ def save_uploaded_file(folder: str, uploaded_file) -> str:
         f.write(uploaded_file.getbuffer())
     return file_path
 
-def process_uploaded_file(uploaded_file: str, company_size: str):
+def process_uploaded_file(uploaded_file: str, company_sector: str, company_size: str):
     work_directory = get_work_directory(uploaded_file.name)
     excel_file_path = save_uploaded_file(work_directory, uploaded_file)
 
     df = pd.read_excel(excel_file_path, index_col=[0, 1])
     df.columns = pd.to_datetime(df.columns)
-    validated_df = validate_dataframe(df, company_size)
+    validated_df = validate_dataframe(df, company_sector, company_size)
 
     return work_directory, excel_file_path, validated_df
 
 
 def get_input_dict(
-    work_directory, excel_file_path, company_name, company_size, company_sector
+    work_directory, excel_file_path, company_name, company_sector, company_size, 
 ):
-    configuration = load_config(company_sector, company_size)
-
+    
     return {
         "work_directory": work_directory,
         "file_path": excel_file_path,
@@ -77,7 +67,7 @@ def get_input_dict(
             "max_iter": 300,
             "tol": 1e-3,
         },
-        "configuration": configuration,
+        "configuration": load_company_profile(company_sector, company_size),
         "financial_policy": 0,
     }
 
@@ -97,6 +87,8 @@ def main():
     # Initialize session state
     if "company_name" not in st.session_state:
         st.session_state.company_name = ""
+    if "company_sector" not in st.session_state:
+        st.session_state.company_sector = "Corporates"
     if "company_size" not in st.session_state:
         st.session_state.company_size = "Small"
     if "uploaded_file" not in st.session_state:
@@ -113,11 +105,11 @@ def main():
     st.session_state.company_name = st.text_input(
         "Enter Company Name", st.session_state.company_name
     )
-    company_sector = st.selectbox(
+    st.session_state.company_sector = st.selectbox(
         "Select the sector of the company",
         COMPANY_SECTOR_OPTIONS,
         index=0,
-        disabled=True,
+        disabled=False,
     )
 
     st.write(
@@ -128,6 +120,7 @@ def main():
         "Company Size",
         COMPANY_SIZE_OPTIONS,
         index=COMPANY_SIZE_OPTIONS.index(st.session_state.company_size),
+        disabled=False
     )
 
     uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
@@ -145,6 +138,7 @@ def main():
                     st.session_state.validated_df,
                 ) = process_uploaded_file(
                     st.session_state.uploaded_file,
+                    st.session_state.company_sector,
                     st.session_state.company_size,
                 )
 
@@ -165,11 +159,11 @@ def main():
                 st.session_state.work_directory,
                 st.session_state.excel_file_path,
                 st.session_state.company_name,
+                st.session_state.company_sector,
                 st.session_state.company_size,
-                company_sector,
             )
 
-            model = HelloCredit(api_key, input_dict)
+            model = HelloCredit(input_dict)
             st.session_state.output_dict = model.run_function()
             st.session_state.input_dict = input_dict
             st.session_state.run_progress_bar = True

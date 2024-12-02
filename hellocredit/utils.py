@@ -1,7 +1,8 @@
+import json
 import pandas as pd
 import pandera as pa
 
-from .helpers import MAPPED_RATINGS, RATING_META
+from .helpers import MAPPED_RATINGS, RATING_META, COMPANY_SECTOR_OPTIONS, COMPANY_SIZE_OPTIONS
 
 
 def get_credit_rating(score):
@@ -26,44 +27,26 @@ def get_rating_meta(key, val):
     return result
 
 
-def validate_dataframe(df: pd.DataFrame, company_size: str) -> pd.DataFrame:
-    expected_metrics = {
-        "Small": [
-            "debt_to_equity",
-            "debt_to_ebitda",
-            "ebitda_to_interest_expense",
-            "debt_to_tangible_assets",
-            "asset_turnover",
-            "inventory_to_cost_of_sales",
-            "cash_to_assets",
-            "ebitda_margin",
-            "total_assets",
-            "sales_growth",
-            "return_on_assets",
-        ],
-        "Medium": [
-            "debt_to_equity",
-            "debt_to_ebitda",
-            "ebitda_to_interest_expense",
-            "debt_to_tangible_assets",
-            "asset_turnover",
-            "inventory_to_cost_of_sales",
-            "cash_to_assets",
-            "ebitda_margin",
-            "total_assets",
-            "sales_growth",
-            "return_on_assets",
-        ],
-        "Large": [
-            "debt_to_equity",
-            "debt_to_ebitda",
-            "ebitda_to_interest_expense",
-            "asset_turnover",
-            "ebitda_margin",
-            "return_on_assets",
-        ],
-    }
 
+def load_company_profile(company_sector: str, company_size: str) -> dict:
+    if company_sector == "Finance Companies":
+        file_path = "public\metrics_large_finance_companies.json"
+
+    elif company_sector == "Corporates":
+        size = company_size.lower()
+        file_path = (
+            "public/metrics_large.json" if size == "large" else "public/metrics_small.json"
+        )
+
+    with open(file_path, "r") as f:
+         return json.load(f)
+
+
+def validate_dataframe(df: pd.DataFrame, company_sector: str, company_size: str) -> pd.DataFrame:
+
+    profile = load_company_profile(company_sector, company_size)
+    company_metrics = [metric for category in profile.values() for metric in category["metric_description"]]
+    
     column_schema = {col: pa.Column(float) for col in df.columns}
     schema = pa.DataFrameSchema(
         columns=column_schema,
@@ -74,9 +57,9 @@ def validate_dataframe(df: pd.DataFrame, company_size: str) -> pd.DataFrame:
                     str,
                     name="Metric Name",
                     checks=[
-                        pa.Check.isin(expected_metrics[company_size]),
+                        pa.Check.isin(company_metrics),
                         pa.Check(
-                            lambda x: set(x) == set(expected_metrics[company_size]),
+                            lambda x: set(x) == set(company_metrics),
                             error="DataFrame contains unexpected or missing metrics",
                         ),
                     ],
@@ -98,6 +81,57 @@ def percentage_to_rating(percentage):
         for rating, threshold in MAPPED_RATINGS
         if scale <= threshold
     )
+
+
+
+import json
+import jsonschema
+from jsonschema import validate
+
+# Define the structure of the JSON schema
+schema = {
+    "type": "object",
+    "patternProperties": {
+        ".*_metrics": {
+            "type": "object",
+            "properties": {
+                "description": {"type": "string"},
+                "metric_description": {
+                    "type": "object",
+                    "additionalProperties": {"type": "string"}
+                },
+                "class_weight": {"type": "integer"},
+                "metric_weights": {
+                    "type": "object",
+                    "additionalProperties": {"type": "number"}
+                },
+                "metrics": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "object",
+                        "properties": {
+                            "lower_is_better": {"type": "boolean"},
+                            "thresholds": {
+                                "type": "array",
+                                "items": {
+                                    "type": "array",
+                                    "items": {"type": "number"}
+                                }
+                            }
+                        },
+                        "required": ["lower_is_better", "thresholds"]
+                    }
+                }
+            },
+            "required": ["description", "metric_description", "class_weight", "metric_weights", "metrics"]
+        }
+    },
+    "additionalProperties": False
+}
+
+
+def test_json_schema(json_data):
+    validate(instance=json_data, schema=schema)
 
 
 def get_buckets(min_val, max_val, lower_is_better=False, num_buckets=9):
